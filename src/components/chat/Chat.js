@@ -4,7 +4,8 @@ import styles from "./Chat.module.css";
 const Chat = () => {
 
     const main_border_css = {
-        border: "1px black solid"
+        border: "1px black solid",
+        width: "70%"
     }
 
     const header_css = {
@@ -22,26 +23,56 @@ const Chat = () => {
         padding: "10px"
     }
 
+    const textarea_css = {
+        width: "95.5%",
+        height: "70px",
+        resize: "none",
+        padding: "20px"
+    }
+
+    const [test, setTest] = React.useState(0);
+
+    const onKeyDown = (e) => {
+
+        if ( "Enter" === e.key ){
+            setTest(e.target.value);
+            
+            e.target.value = "";
+        }
+
+    }
+
+    const list = [
+        "asd", "qwe", "ert"
+    ];
+
+    
+
     return(
         <main style={main_border_css} >
             <header style={header_css}>
                 <h2 className={styles.test}>방 title</h2>
             </header>
             <main style={main_css}>
-                <SelfChat />
+                {/* <SelfChat msg={test} /> */}
                 <OpponentChat />
                 <OpponentChat />
                 <OpponentChat />
                 <OpponentChat />
+                {
+                    list.map( msg => 
+                        <SelfChat msg={msg} />
+                    )
+                }
             </main>
             <footer style={footer_css}>
-                <textarea></textarea>
+                <textarea style={textarea_css} onKeyDown={onKeyDown}></textarea>
             </footer>
         </main>
     )
 }
 
-const SelfChat = () => {
+const SelfChat = ({msg}) => {
 
     const div_css = {
         display: "flex",
@@ -66,7 +97,7 @@ const SelfChat = () => {
                 오후 4:04
             </p>
             <p style={p_contents_css}>
-                Nice guy~~
+                {msg}
             </p>
         </div>
     )
