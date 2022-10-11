@@ -1,5 +1,74 @@
+.main_border_css{
+    border: 1px black solid;
+    width: 70%;
+}
+
+.header_css{
+    display: flex;
+    flex-direction: revert;
+    padding: 10px;
+    border: 1px #c9c9c9 solid;
+}
+
+.footer_css{
+    margin-left: 80px;
+    margin-right: 80px;
+    margin-bottom: 20px;
+}
+
+.main_css{
+    padding: 10px;
+    height: 400px;
+    overflow-y: auto;
+}
+
+.textarea_css{
+    width: 95.5%;
+    height: 40px;
+    resize: none;
+    padding: 25px;
+    font-size: 17px;
+    overflow: hidden;
+}
+
+
+
+
 .img_profile{
     width: 50px;
     height: 50px;
     margin-top: 14px;
+}
+
+.div_css{
+    display: flex;
+    justify-content: end;
+}
+
+.p_date_css{
+    margin-right: 20px;
+    margin-top: 42px;
+}
+
+.p_contents_css{
+    margin-right: 20px;
+    border: 1px black solid;
+    border-radius: 7px;
+    padding: 12px;
+}
+
+.div_css_op{
+    display: flex;
+}
+
+.p_contents_css_op{
+    margin-left: 20px;
+    border: 1px black solid;
+    border-radius: 7px;
+    padding: 12px;
+}
+
+.p_date_css_op{
+    margin-left: 20px;
+    margin-top: 42px;
 }

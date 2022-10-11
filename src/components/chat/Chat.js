@@ -3,101 +3,92 @@ import styles from "./Chat.module.css";
 
 const Chat = () => {
 
-    const main_border_css = {
-        border: "1px black solid",
-        width: "70%"
-    }
-
-    const header_css = {
-        display: "flex",
-        flexDirection: "revert",
-        padding: "10px",
-        border: "1px #c9c9c9 solid"
-    }
-
-    const footer_css = {
-        padding: "10px"
-    }
-
-    const main_css = {
-        padding: "10px"
-    }
-
-    const textarea_css = {
-        width: "95.5%",
-        height: "70px",
-        resize: "none",
-        padding: "20px"
-    }
-
-    const [test, setTest] = React.useState(0);
-
+    const [contents, setContents] = React.useState(()=>{
+        return []
+    });
+    
     const onKeyDown = (e) => {
 
-        if ( "Enter" === e.key ){
-            setTest(e.target.value);
-            
+        if ( "Enter" === e.key && "" !== e.target.value ){
+            setContents([
+                ...contents, 
+                { 
+                    contents: e.target.value,
+                    writerCode: 0
+                }
+            ])
             e.target.value = "";
+            
+            
         }
 
     }
 
-    const list = [
-        "asd", "qwe", "ert"
-    ];
-
+    const mainRef = React.useRef();
+    const textareaRef = React.useRef();
     
+    React.useEffect(()=>{
+        console.log("useEffect");
+
+        const chatScroll = document.getElementById("main_div_chat");
+        chatScroll.scrollTop = mainRef.current.scrollHeight;
+    
+        console.log(mainRef.current.scrollHeight);
+        console.log(contents);
+
+        console.log(textareaRef.current);
+        
+
+    },[contents]); //[contents] 가 바뀔떄마다 이벤트 발생.
+
 
     return(
-        <main style={main_border_css} >
-            <header style={header_css}>
+        <main className={styles.main_border_css} >
+            <header className={styles.header_css}>
                 <h2 className={styles.test}>방 title</h2>
             </header>
-            <main style={main_css}>
-                {/* <SelfChat msg={test} /> */}
-                <OpponentChat />
-                <OpponentChat />
-                <OpponentChat />
-                <OpponentChat />
+            <main id="main_div_chat" className={styles.main_css} ref={mainRef}>
+
                 {
-                    list.map( msg => 
-                        <SelfChat msg={msg} />
-                    )
+                    contents.map( (obj, index) => {
+                        return <SelfChat obj={obj} key={index} />
+                    })
                 }
             </main>
-            <footer style={footer_css}>
-                <textarea style={textarea_css} onKeyDown={onKeyDown}></textarea>
+            <footer className={styles.footer_css}>
+                <textarea 
+                className={styles.textarea_css} 
+                onKeyDown={onKeyDown} 
+                ref={textareaRef} 
+                wrap="hard"
+                maxLength="50"
+                rows="1"
+                ></textarea>
             </footer>
         </main>
     )
 }
 
-const SelfChat = ({msg}) => {
-
-    const div_css = {
-        display: "flex",
-        justifyContent: "end"
-    }
-
-    const p_date_css = {
-        marginRight: "20px",
-        marginTop: "42px"
-    }
-
-    const p_contents_css = {
-        marginRight: "20px",
-        border: "1px black solid",
-        borderRadius: "7px",
-        padding: "12px"
-    }
-
+const SelfChat = ({obj}) => {
+    
     return(
-        <div style={div_css}>
-            <p style={p_date_css}>
+        0 === obj.writerCode ?
+        <div className={styles.div_css}>
+            <p className={styles.p_date_css}>
                 오후 4:04
             </p>
-            <p style={p_contents_css}>
-                {msg}
+            <p className={styles.p_contents_css}>
+                {obj.contents}
+            </p>
+        </div>
+        :
+        <div className={styles.div_css_op}>
+            <img className={styles.img_profile} src="./img/img_profile.png" alt=""/>
+            <p className={styles.p_contents_css_op}>
+                {obj.contents}
+            </p>
+            <p className={styles.p_date_css_op}>
+                오후 5:22
             </p>
         </div>
     )
@@ -105,29 +96,14 @@ const SelfChat = ({msg}) => {
 
 const OpponentChat = () => {
 
-    const div_css = {
-        display: "flex"
-    }
-
-    const p_contents_css = {
-        marginLeft: "20px",
-        border: "1px black solid",
-        borderRadius: "7px",
-        padding: "12px"
-    }
-
-    const p_date_css = {
-        marginLeft: "20px",
-        marginTop: "42px"
-    }
 
     return(
-        <div style={div_css}>
+        <div className={styles.div_css_op}>
             <img className={styles.img_profile} src="./img/img_profile.png" alt=""/>
-            <p style={p_contents_css}>
+            <p className={styles.p_contents_css_op}>
                 Nice guy~~
             </p>
-            <p style={p_date_css}>
+            <p className={styles.p_date_css_op}>
                 오후 5:22
             </p>
         </div>
