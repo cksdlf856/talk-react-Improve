@@ -10,10 +10,20 @@ const Chat = () => {
     const onKeyDown = (e) => {
 
         if ( "Enter" === e.key && "" !== e.target.value ){
+
+            const date = new Date();
+            console.log(date.getDate);
+            
+            //date.getHours()+":"+date.getMinutes()
+
+            const hours = date.getHours() > 12 ? "오후 "+(date.getHours()-12) : "오전 " + date.getHours();
+            const minutes = date.getMinutes();
+
             setContents([
                 ...contents, 
                 { 
                     contents: e.target.value,
+                    time: hours + ":" + minutes,
                     writerCode: 0
                 }
             ])
@@ -75,7 +85,7 @@ const SelfChat = ({obj}) => {
         0 === obj.writerCode ?
         <div className={styles.div_css}>
             <p className={styles.p_date_css}>
-                오후 4:04
+                {obj.time}
             </p>
             <p className={styles.p_contents_css}>
                 {obj.contents}
@@ -88,7 +98,7 @@ const SelfChat = ({obj}) => {
                 {obj.contents}
             </p>
             <p className={styles.p_date_css_op}>
-                오후 5:22
+                {obj.time}
             </p>
         </div>
     )
@@ -104,7 +114,10 @@ const OpponentChat = () => {
                 Nice guy~~
             </p>
             <p className={styles.p_date_css_op}>
-                오후 5:22
+                {
+                    
+
+                }
             </p>
         </div>
     )
