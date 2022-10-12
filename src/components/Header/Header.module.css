@@ -1,0 +1,16 @@
+.header {
+    margin: "10px 0 20px 0";
+    font-size: 25px;
+}
+
+.header_nav {
+    display: "flex";
+    justify-content: "space-between";
+    margin: "5px";
+}
+
+.header_nav_item_right {
+    display: "flex";
+    gap: "10px";
+    margin: "5px";
+}
