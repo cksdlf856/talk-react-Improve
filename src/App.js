@@ -1,8 +1,10 @@
 import React from "react";
 import { HashRouter, Routes, Route } from "react-router-dom";
+
+import Header from "./components/Header/Header";
+import Side from "./components/Side/Side";
 import Chat from "./components/chat/Chat";
-import Header from "./components/Header";
-import Side from "./components/Side";
+
 
 
 function App() {
