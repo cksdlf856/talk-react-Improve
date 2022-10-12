@@ -12,12 +12,12 @@ const Chat = () => {
         if ( "Enter" === e.key && "" !== e.target.value ){
 
             const date = new Date();
-            console.log(date.getDate);
+            //console.log(date.getDate);
             
             //date.getHours()+":"+date.getMinutes()
 
             const hours = date.getHours() > 12 ? "오후 "+(date.getHours()-12) : "오전 " + date.getHours();
-            const minutes = date.getMinutes();
+            const minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
 
             setContents([
                 ...contents, 
@@ -43,10 +43,10 @@ const Chat = () => {
         const chatScroll = document.getElementById("main_div_chat");
         chatScroll.scrollTop = mainRef.current.scrollHeight;
     
-        console.log(mainRef.current.scrollHeight);
-        console.log(contents);
+        //console.log(mainRef.current.scrollHeight);
+        //console.log(contents);
 
-        console.log(textareaRef.current);
+        //console.log(textareaRef.current);
         
 
     },[contents]); //[contents] 가 바뀔떄마다 이벤트 발생.
