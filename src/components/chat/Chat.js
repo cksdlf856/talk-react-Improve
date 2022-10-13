@@ -1,20 +1,66 @@
 import React from "react";
 import styles from "./Chat.module.css";
 
+import { db } from "../../firebase";
+import { doc, getDoc, getDocs, collection, setDoc } from "firebase/firestore";
+
+
 const Chat = () => {
 
     const [contents, setContents] = React.useState(()=>{
         return []
     });
+
+    React.useEffect( () => {
+
+        async function chatList(){
+
+            const list = [];
+
+            // ==================================
+            // firebase 채팅 리스트 불러오기
+            // ==================================
+            const querySnapshot = await getDocs(collection(db, "rooms/room1/msges"));
+            querySnapshot.forEach((doc) => {
+                
+                console.log(doc.id, " => ", doc.data().chat);
+
+                list.push({
+                    chat: doc.data().chat,
+                    time: doc.data().time,
+                    writerCode: doc.data().writerCode
+                });
+
+            });
+
+            setContents(list);
+
+        }
+        chatList();
+
+    },[]);
     
-    const onKeyDown = (e) => {
+    
+    
+    const onKeyDown = async (e) => {
 
         if ( "Enter" === e.key && "" !== e.target.value ){
 
+            // ==================================
+            // firebase 채팅 단건 불러오기
+            // ==================================
+            // const docRef = doc(db, "rooms/room_1_2/msges/msg1");
+            // const docSnap = await getDoc(docRef);
+
+            // if (docSnap.exists()) {
+            //     console.log("Document data:", docSnap.data());
+            // } else {
+                
+            //     console.log("No such document!");
+            // }
+
+
             const date = new Date();
-            //console.log(date.getDate);
-            
-            //date.getHours()+":"+date.getMinutes()
 
             const hours = date.getHours() > 12 ? "오후 "+(date.getHours()-12) : "오전 " + date.getHours();
             const minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
@@ -22,14 +68,27 @@ const Chat = () => {
             setContents([
                 ...contents, 
                 { 
-                    contents: e.target.value,
+                    chat: e.target.value,
                     time: hours + ":" + minutes,
                     writerCode: 0
                 }
-            ])
+            ]);
+
+            //const msgSize = chatList.size+1;
+            const msgSize = contents.length+1;
+
+            // firebase 채팅 push
+            const citiesRef = collection(db, "rooms/room1/msges");
+            await setDoc(doc(citiesRef, "msg"+msgSize), {
+                chat: e.target.value,
+                from: "박찬일", 
+                id: 1,
+                writerCode: 0,
+                time: hours + ":" + minutes, 
+                date: "2022-10-13"
+            });
+
             e.target.value = "";
-            
-            
         }
 
     }
@@ -44,7 +103,7 @@ const Chat = () => {
         chatScroll.scrollTop = mainRef.current.scrollHeight;
     
         //console.log(mainRef.current.scrollHeight);
-        //console.log(contents);
+        console.log(contents);
 
         //console.log(textareaRef.current);
         
@@ -63,6 +122,7 @@ const Chat = () => {
                     contents.map( (obj, index) => {
                         return <SelfChat obj={obj} key={index} />
                     })
+                    
                 }
             </main>
             <footer className={styles.footer_css}>
@@ -88,14 +148,14 @@ const SelfChat = ({obj}) => {
                 {obj.time}
             </p>
             <p className={styles.p_contents_css}>
-                {obj.contents}
+                {obj.chat}
             </p>
         </div>
         :
         <div className={styles.div_css_op}>
             <img className={styles.img_profile} src="./img/img_profile.png" alt=""/>
             <p className={styles.p_contents_css_op}>
-                {obj.contents}
+                {obj.chat}
             </p>
             <p className={styles.p_date_css_op}>
                 {obj.time}
@@ -104,24 +164,24 @@ const SelfChat = ({obj}) => {
     )
 }
 
-const OpponentChat = () => {
+// const OpponentChat = () => {
 
 
-    return(
-        <div className={styles.div_css_op}>
-            <img className={styles.img_profile} src="./img/img_profile.png" alt=""/>
-            <p className={styles.p_contents_css_op}>
-                Nice guy~~
-            </p>
-            <p className={styles.p_date_css_op}>
-                {
+//     return(
+//         <div className={styles.div_css_op}>
+//             <img className={styles.img_profile} src="./img/img_profile.png" alt=""/>
+//             <p className={styles.p_contents_css_op}>
+//                 Nice guy~~
+//             </p>
+//             <p className={styles.p_date_css_op}>
+//                 {
                     
 
-                }
-            </p>
-        </div>
-    )
-}
+//                 }
+//             </p>
+//         </div>
+//     )
+// }
 
 
 export default Chat;
