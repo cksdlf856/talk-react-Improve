@@ -1,0 +1,24 @@
+.div_main{
+    background-color: rgb(108, 25, 122);
+    display: flex;
+}
+
+.div_sub_1{
+    display: flex;
+    flex-direction: column;
+}
+
+.h2_name{
+    color: white;
+}
+
+.h1_contents{
+    color: white;
+}
+
+.btn_google_auth{
+    font-size: 19px;
+    font-weight: bold;
+    padding: 15px;
+    cursor: pointer;
+}

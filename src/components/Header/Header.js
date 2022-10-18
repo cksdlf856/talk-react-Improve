@@ -12,11 +12,11 @@ const Header = () => {
         <header className={styles.header}>
             <nav className={styles.header_nav}>
                 <div className={styles.hedader_nav_item_left} >
-                    <i class="fa-solid fa-bars" onClick={header_menu_toggle}></i>
+                    <i className="fa-solid fa-bars" onClick={header_menu_toggle}></i>
                 </div>
                 <div className={styles.header_nav_item_right}>
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <i class="fa-solid fa-bell"></i>
+                    <i className="fa-solid fa-magnifying-glass"></i>
+                    <i className="fa-solid fa-bell"></i>
                 </div>
 
             </nav>

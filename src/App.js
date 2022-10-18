@@ -4,6 +4,7 @@ import { HashRouter, Routes, Route } from "react-router-dom";
 import Header from "./components/Header/Header";
 import Side from "./components/Side/Side";
 import Chat from "./components/chat/Chat";
+import Oauth from "./components/oauth/Oauth";
 
 function App() {
   return (
@@ -11,7 +12,8 @@ function App() {
       <Header />
       <Side />
       <Routes>
-        <Route path="/" element={<Chat />} />
+        <Route path="/" element={<Oauth />} />
+        <Route path="/chat" element={<Chat />} />
       </Routes>
     </HashRouter>
   );
