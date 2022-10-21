@@ -13,6 +13,8 @@ const Chat = () => {
     
     const { state } = useLocation();
     const userRoomList = React.useRef([]);
+    
+    
 
     React.useEffect(()=>{
     
@@ -32,38 +34,27 @@ const Chat = () => {
                 const source = change.doc.metadata.hasPendingWrites ? "Local" : "Server";
                 console.log(source);
 
-                if (change.type === "added") {
-                    console.log("New city: ", change.doc.data());
+                if (change.type === "added" && "Server" === source) {
+                    //console.log("New city: ", change.doc.data());
 
-                    // setContents([
-                    //     ...contents, 
-                    //     { 
-                    //         chat: change.doc.data().chat,
-                    //         from: change.doc.data().from, 
-                    //         time: hours + ":" + minutes,
-                    //         date: year+"-"+month+"-"+day,
-                    //         email: change.doc.data().email
-                    //     }
-                    // ]);
-
-                    setContents((prevState)=>{
-                        return [...prevState,
-                            { 
-                                chat: change.doc.data().chat,
-                                from: change.doc.data().from, 
-                                time: change.doc.data().time,
-                                date: change.doc.data().date,
-                                email: change.doc.data().email
-                            } 
-                        ]
-                    })
+                    // setContents((prevState)=>{
+                    //     return [...prevState,
+                    //         { 
+                    //             chat: change.doc.data().chat,
+                    //             from: change.doc.data().from, 
+                    //             time: change.doc.data().time,
+                    //             date: change.doc.data().date,
+                    //             email: change.doc.data().email
+                    //         } 
+                    //     ]
+                    // })
                     
                 }
                 if (change.type === "modified") {
-                    console.log("Modified city: ", change.doc.data());
+                    //console.log("Modified city: ", change.doc.data());
                 }
                 if (change.type === "removed") {
-                    console.log("Removed city: ", change.doc.data());
+                    //console.log("Removed city: ", change.doc.data());
                 }
                 
               });
@@ -83,7 +74,7 @@ const Chat = () => {
     React.useEffect( () => {
 
         const q = query(collection(db, "users"), where("email", "==", state.email));
-        const qq = query(collection(db, "rooms/room1/msges"), orderBy("date"));
+        const qq = query(collection(db, "rooms/room1/msges"), orderBy("order"));
 
         async function chatList(){
 
@@ -130,7 +121,10 @@ const Chat = () => {
                 list.push({
                     chat: doc.data().chat,
                     time: doc.data().time,
-                    email: doc.data().email
+                    email: doc.data().email,
+                    from: doc.data().from,
+                    date: doc.data().date,
+                    order: doc.data().order
                 });
 
             });
@@ -140,11 +134,8 @@ const Chat = () => {
         }
         chatList();
 
-        
-
     },[]);
-    
-    
+
     
     const onKeyDown = async (e) => {
 
@@ -159,19 +150,48 @@ const Chat = () => {
             const month = date.getMonth()+1;
             const day = date.getDate();
 
-            // setContents([
-            //     ...contents, 
-            //     { 
-            //         chat: e.target.value,
-            //         from: state.displayName, 
-            //         time: hours + ":" + minutes,
-            //         date: year+"-"+month+"-"+day,
-            //         email: state.email
-            //     }
-            // ]);
-
             const msgSize = contents.length+1;
+
+            //local 내가 쓴 글 작업.
+            setContents((contents)=>{
+                return[
+                    ...contents,
+                    { 
+                        chat: e.target.value,
+                        from: state.displayName, 
+                        time: hours + ":" + minutes,
+                        date: year+"-"+month+"-"+day,
+                        email: state.email,
+                        order: msgSize
+                    }
+                ]
+            })
             
+            //상대방과 최초 대화시 방 만들어주기.
+            if ( 1 === msgSize ){
+                
+                // ==================================
+                // firebase 유저 채팅 리스트 push
+                // ==================================
+                const usersRef = collection(db, "users");
+                await setDoc(doc(usersRef, state.email), {
+                    email: state.email,
+                    roomList: "room1"
+                });
+
+
+                // ==================================
+                // firebase 상대방 채팅 리스트 push
+                // ==================================
+                const usersRef2 = collection(db, "users");
+                await setDoc(doc(usersRef2, "chichyony@gmail.com"), {
+                    email: "chichyony@gmail.com",
+                    roomList: "room1"
+                });
+
+            }
+
+
             // firebase 채팅 push
             const roomsRef = collection(db, "rooms/"+ (0 === userRoomList.current.length ? "room1" : "room1") +"/msges");
             await setDoc(doc(roomsRef, "msg"+msgSize), {
@@ -179,35 +199,20 @@ const Chat = () => {
                 from: state.displayName, 
                 time: hours + ":" + minutes, 
                 date: year+"-"+month+"-"+day,
-                email: state.email
-            });
-
-            // ==================================
-            // firebase 유저 채팅 리스트 push
-            // ==================================
-            const usersRef = collection(db, "users");
-            await setDoc(doc(usersRef, state.email), {
                 email: state.email,
-                roomList: "room1"
+                order: msgSize
             });
 
-
-            // ==================================
-            // firebase 상대방 채팅 리스트 push
-            // ==================================
-            const usersRef2 = collection(db, "users");
-            await setDoc(doc(usersRef2, "chichyony@gmail.com"), {
-                email: "chichyony@gmail.com",
-                roomList: "room1"
-            });
-
+            //텍스트창 초기화
             e.target.value = "";
+
+            
         }
 
     }
 
     const mainRef = React.useRef();
-    const textareaRef = React.useRef();
+    const inputRef = React.useRef();
     
 
     //최신 채팅 업데이드 시 스크롤 하단으로 이동.
@@ -226,49 +231,81 @@ const Chat = () => {
             </header>
             <main id="main_div_chat" className={styles.main_css} ref={mainRef}>
 
+                <div style={{
+                    "textAlign": "center"
+                }}>
+                    <b style={{
+                        "backgroundColor":"gray",
+                        "borderRadius":"15px",
+                        "padding":"8px"
+                    }}>
+                        { "2022-10-21" }
+                    </b>
+                </div>
+
                 {
                     contents.map( (obj, index) => {
-                        return <ChatListUi obj={obj} key={index} email={state.email} />
+                        return <ChatListUi obj={obj} key={index} email={state.email} contents={contents} />
                     })
                     
                 }
             </main>
             <footer className={styles.footer_css}>
-                <textarea 
-                className={styles.textarea_css} 
+                <input 
+                className={styles.input_css} 
                 onKeyDown={onKeyDown} 
-                ref={textareaRef} 
-                wrap="hard"
-                maxLength="50"
-                rows="1"
-                ></textarea>
+                ref={inputRef} 
+                maxLength="45"
+                />
             </footer>
         </main>
     )
 }
 
-const ChatListUi = ({obj, email}) => {
+const ChatListUi = ({obj, email, contents}) => {
+    
     
     return(
-        email === obj.email ?
-        <div className={styles.div_css}>
-            <p className={styles.p_date_css}>
-                {obj.time}
-            </p>
-            <p className={styles.p_contents_css}>
-                {obj.chat}
-            </p>
-        </div>
-        :
-        <div className={styles.div_css_op}>
-            <img className={styles.img_profile} src="./img/img_profile.png" alt=""/>
-            <p className={styles.p_contents_css_op}>
-                {obj.chat}
-            </p>
-            <p className={styles.p_date_css_op}>
-                {obj.time}
-            </p>
-        </div>
+
+        <>
+            { obj.date !== (contents[obj.order-1].date === undefined ? "" : contents[obj.order-1].date ) ? 
+            <div style={{
+                "textAlign": "center"
+            }}>
+                <b style={{
+                    "backgroundColor":"gray",
+                    "borderRadius":"15px",
+                    "padding":"8px"
+                }}>
+                    { obj.date }
+                </b>
+            </div>
+            :
+            ""
+            }
+
+            { email === obj.email ?
+            <div className={styles.div_css}>
+                <p className={styles.p_date_css}>
+                    {obj.time}
+                </p>
+                <p className={styles.p_contents_css}>
+                    {obj.chat}
+                </p>
+            </div>
+            :
+            <div className={styles.div_css_op}>
+                <img className={styles.img_profile} src="./img/img_profile.png" alt=""/>
+                <p className={styles.p_contents_css_op}>
+                    {obj.chat}
+                </p>
+                <p className={styles.p_date_css_op}>
+                    {obj.time}
+                </p>
+            </div>
+            }
+        </>
+        
     )
 }
 

@@ -22,10 +22,9 @@
     overflow-y: auto;
 }
 
-.textarea_css{
+.input_css{
     width: 95.5%;
     height: 40px;
-    resize: none;
     padding: 25px;
     font-size: 17px;
     overflow: hidden;
