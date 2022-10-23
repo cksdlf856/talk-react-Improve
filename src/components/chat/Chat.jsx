@@ -86,9 +86,9 @@ const Chat = () => {
             if ( 1 === query.size ){ 
                 
                 query.forEach((doc) => {
-                    
-                    if ( "" !== doc.data().roomList ) {
-                        userRoomList.current = doc.data().roomList.split(",");
+
+                    if ( 0 !== doc.data().roomList.length ) {
+                        userRoomList.current = doc.data().roomList;
                     }
                     
                 });
@@ -228,7 +228,7 @@ const Chat = () => {
 
     return(
         <>
-            <Side />
+            <Side userRoomList={userRoomList} />
             <main className={styles.main_border_css} >
                 <header className={styles.header_css}>
                     <h2 className={styles.test}>방 title</h2>
@@ -269,7 +269,9 @@ const ChatListUi = ({obj, email, contents}) => {
                     "color":"rgb(170 171 173)",
                     "borderRadius":"6px",
                     "padding":"10px",
-                    "fontSize": "12px",
+                    "paddingLeft":"80px",
+                    "paddingRight":"80px",
+                    "fontSize": "13px",
                     "opacity": "0.5",
                     "cursor": "pointer",
                     "transition": "all 1"

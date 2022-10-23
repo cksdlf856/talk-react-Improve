@@ -1,61 +1,24 @@
 import React from "react";
 import styles from "./Side.module.css";
 
-const Side = () => {
+const Side = ({userRoomList}) => {
 
-    
+    //debugger;
     
     return(
         <aside>
-            <div className={styles.div_aside}>
-                <img className={styles.img_profile} src="./img/img_profile.png" alt=""/>
-                <b className={styles.b_userName} >카카오페이</b>
-                <small className={styles.small_date} >2022-10-23</small>
-                <p className={styles.p_title_contents} >송금이 완료되었습니다. 송금이 완료되었습니다.</p>
-            </div>
-            <div className={styles.div_aside}>
-                <img className={styles.img_profile} src="./img/img_profile.png" alt=""/>
-                <b className={styles.b_userName} >카카오페이</b>
-                <small className={styles.small_date} >2022-10-23</small>
-                <p className={styles.p_title_contents} >송금이 완료되었습니다. 송금이 완료되었습니다.</p>
-            </div>
-            <div className={styles.div_aside}>
-                <img className={styles.img_profile} src="./img/img_profile.png" alt=""/>
-                <b className={styles.b_userName} >카카오페이</b>
-                <small className={styles.small_date} >2022-10-23</small>
-                <p className={styles.p_title_contents} >송금이 완료되었습니다. 송금이 완료되었습니다.</p>
-            </div>
-            <div className={styles.div_aside}>
-                <img className={styles.img_profile} src="./img/img_profile.png" alt=""/>
-                <b className={styles.b_userName} >카카오페이</b>
-                <small className={styles.small_date} >2022-10-23</small>
-                <p className={styles.p_title_contents} >송금이 완료되었습니다. 송금이 완료되었습니다.</p>
-            </div>
-            <div className={styles.div_aside}>
-                <img className={styles.img_profile} src="./img/img_profile.png" alt=""/>
-                <b className={styles.b_userName} >카카오페이</b>
-                <small className={styles.small_date} >2022-10-23</small>
-                <p className={styles.p_title_contents} >송금이 완료되었습니다. 송금이 완료되었습니다.</p>
-            </div>
-            <div className={styles.div_aside}>
-                <img className={styles.img_profile} src="./img/img_profile.png" alt=""/>
-                <b className={styles.b_userName} >카카오페이</b>
-                <small className={styles.small_date} >2022-10-23</small>
-                <p className={styles.p_title_contents} >송금이 완료되었습니다. 송금이 완료되었습니다.</p>
-            </div>
-            <div className={styles.div_aside}>
-                <img className={styles.img_profile} src="./img/img_profile.png" alt=""/>
-                <b className={styles.b_userName} >카카오페이</b>
-                <small className={styles.small_date} >2022-10-23</small>
-                <p className={styles.p_title_contents} >송금이 완료되었습니다. 송금이 완료되었습니다.</p>
-            </div>
-            <div className={styles.div_aside}>
-                <img className={styles.img_profile} src="./img/img_profile.png" alt=""/>
-                <b className={styles.b_userName} >카카오페이</b>
-                <small className={styles.small_date} >2022-10-23</small>
-                <p className={styles.p_title_contents} >송금이 완료되었습니다. 송금이 완료되었습니다.</p>
-            </div>
-            
+            {
+                userRoomList.current.map((obj, index)=>{
+                    return (
+                        <div key={index} className={styles.div_aside}>
+                            <img className={styles.img_profile} src={obj.img} alt=""/>
+                            <b className={styles.b_userName} >{obj.name}</b>
+                            <small className={styles.small_date} >{obj.date}</small>
+                            <p className={styles.p_title_contents} >{obj.titleContents}</p>
+                        </div>
+                    )
+                })
+            }
         </aside>
     )
 }
