@@ -37,17 +37,18 @@ const Chat = () => {
                 if (change.type === "added" && "Server" === source) {
                     //console.log("New city: ", change.doc.data());
 
-                    // setContents((prevState)=>{
-                    //     return [...prevState,
-                    //         { 
-                    //             chat: change.doc.data().chat,
-                    //             from: change.doc.data().from, 
-                    //             time: change.doc.data().time,
-                    //             date: change.doc.data().date,
-                    //             email: change.doc.data().email
-                    //         } 
-                    //     ]
-                    // })
+                    setContents((prevState)=>{
+                        return [...prevState,
+                            { 
+                                chat: change.doc.data().chat,
+                                from: change.doc.data().from, 
+                                time: change.doc.data().time,
+                                date: change.doc.data().date,
+                                email: change.doc.data().email,
+                                order: change.doc.data().order
+                            } 
+                        ]
+                    })
                     
                 }
                 if (change.type === "modified") {
@@ -230,19 +231,6 @@ const Chat = () => {
                 <h2 className={styles.test}>방 title</h2>
             </header>
             <main id="main_div_chat" className={styles.main_css} ref={mainRef}>
-
-                <div style={{
-                    "textAlign": "center"
-                }}>
-                    <b style={{
-                        "backgroundColor":"gray",
-                        "borderRadius":"15px",
-                        "padding":"8px"
-                    }}>
-                        { "2022-10-21" }
-                    </b>
-                </div>
-
                 {
                     contents.map( (obj, index) => {
                         return <ChatListUi obj={obj} key={index} email={state.email} contents={contents} />
@@ -264,18 +252,18 @@ const Chat = () => {
 
 const ChatListUi = ({obj, email, contents}) => {
     
-    
     return(
 
         <>
-            { obj.date !== (contents[obj.order-1].date === undefined ? "" : contents[obj.order-1].date ) ? 
+            { obj.date !== (contents[obj.order-2] === undefined ? "" : contents[obj.order-2].date ) ? 
             <div style={{
-                "textAlign": "center"
+                "textAlign": "center",
+                "padding": "80px"
             }}>
                 <b style={{
-                    "backgroundColor":"gray",
+                    "backgroundColor":"#cecece",
                     "borderRadius":"15px",
-                    "padding":"8px"
+                    "padding":"10px"
                 }}>
                     { obj.date }
                 </b>

@@ -1,0 +1,6 @@
+#root{
+    display: grid;
+    grid-template-columns: 300px 1100px;
+    justify-content: start;
+    gap: 20px;
+}

@@ -3,8 +3,8 @@ import { HashRouter, Routes, Route } from "react-router-dom";
 
 import Header from "./components/Header/Header";
 import Side from "./components/Side/Side";
-import Chat from "./components/chat/Chat";
-import Oauth from "./components/oauth/Oauth";
+import Chat from "./components/Chat/Chat";
+import Oauth from "./components/Oauth/Oauth";
 
 function App() {
   return (

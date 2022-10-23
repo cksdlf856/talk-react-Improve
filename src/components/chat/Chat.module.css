@@ -1,6 +1,7 @@
 .main_border_css{
     border: 1px black solid;
-    width: 70%;
+    grid-column: 2/3;
+    grid-row: 2/3;
 }
 
 .header_css{
