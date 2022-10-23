@@ -4,16 +4,58 @@ import styles from "./Side.module.css";
 const Side = () => {
 
     
+    
     return(
         <aside>
-            여러분 오늘도 에버디벨에 방문해 주셔서 감사합니다.<br/>
-            everdevel 관련 사이트 <br/>
-            <ul>
-                <li><a href='mybook.everdevel.com' target='_blank'>웹코딩 시작하기 서포트 페이지</a></li>
-                <li><a href='mybook.everdevel.com/php200/' target='_blank'>php 200제 서포트 페이지</a></li>
-                <li><a href='www.startwebcoding.com' target='_blank'>swc</a></li>
-                <li><a href='www.tomodevel.jp' target='_blank'>tomodevel</a></li>
-            </ul>
+            <div className={styles.div_aside}>
+                <img className={styles.img_profile} src="./img/img_profile.png" alt=""/>
+                <b className={styles.b_userName} >카카오페이</b>
+                <small className={styles.small_date} >2022-10-23</small>
+                <p className={styles.p_title_contents} >송금이 완료되었습니다. 송금이 완료되었습니다.</p>
+            </div>
+            <div className={styles.div_aside}>
+                <img className={styles.img_profile} src="./img/img_profile.png" alt=""/>
+                <b className={styles.b_userName} >카카오페이</b>
+                <small className={styles.small_date} >2022-10-23</small>
+                <p className={styles.p_title_contents} >송금이 완료되었습니다. 송금이 완료되었습니다.</p>
+            </div>
+            <div className={styles.div_aside}>
+                <img className={styles.img_profile} src="./img/img_profile.png" alt=""/>
+                <b className={styles.b_userName} >카카오페이</b>
+                <small className={styles.small_date} >2022-10-23</small>
+                <p className={styles.p_title_contents} >송금이 완료되었습니다. 송금이 완료되었습니다.</p>
+            </div>
+            <div className={styles.div_aside}>
+                <img className={styles.img_profile} src="./img/img_profile.png" alt=""/>
+                <b className={styles.b_userName} >카카오페이</b>
+                <small className={styles.small_date} >2022-10-23</small>
+                <p className={styles.p_title_contents} >송금이 완료되었습니다. 송금이 완료되었습니다.</p>
+            </div>
+            <div className={styles.div_aside}>
+                <img className={styles.img_profile} src="./img/img_profile.png" alt=""/>
+                <b className={styles.b_userName} >카카오페이</b>
+                <small className={styles.small_date} >2022-10-23</small>
+                <p className={styles.p_title_contents} >송금이 완료되었습니다. 송금이 완료되었습니다.</p>
+            </div>
+            <div className={styles.div_aside}>
+                <img className={styles.img_profile} src="./img/img_profile.png" alt=""/>
+                <b className={styles.b_userName} >카카오페이</b>
+                <small className={styles.small_date} >2022-10-23</small>
+                <p className={styles.p_title_contents} >송금이 완료되었습니다. 송금이 완료되었습니다.</p>
+            </div>
+            <div className={styles.div_aside}>
+                <img className={styles.img_profile} src="./img/img_profile.png" alt=""/>
+                <b className={styles.b_userName} >카카오페이</b>
+                <small className={styles.small_date} >2022-10-23</small>
+                <p className={styles.p_title_contents} >송금이 완료되었습니다. 송금이 완료되었습니다.</p>
+            </div>
+            <div className={styles.div_aside}>
+                <img className={styles.img_profile} src="./img/img_profile.png" alt=""/>
+                <b className={styles.b_userName} >카카오페이</b>
+                <small className={styles.small_date} >2022-10-23</small>
+                <p className={styles.p_title_contents} >송금이 완료되었습니다. 송금이 완료되었습니다.</p>
+            </div>
+            
         </aside>
     )
 }

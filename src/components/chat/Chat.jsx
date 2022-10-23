@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./Chat.module.css";
 import { useLocation } from "react-router-dom";
+import Side from "../Side/Side";
 
 
 import { db } from "../../firebase";
@@ -226,27 +227,30 @@ const Chat = () => {
 
 
     return(
-        <main className={styles.main_border_css} >
-            <header className={styles.header_css}>
-                <h2 className={styles.test}>방 title</h2>
-            </header>
-            <main id="main_div_chat" className={styles.main_css} ref={mainRef}>
-                {
-                    contents.map( (obj, index) => {
-                        return <ChatListUi obj={obj} key={index} email={state.email} contents={contents} />
-                    })
-                    
-                }
+        <>
+            <Side />
+            <main className={styles.main_border_css} >
+                <header className={styles.header_css}>
+                    <h2 className={styles.test}>방 title</h2>
+                </header>
+                <main id="main_div_chat" className={styles.main_css} ref={mainRef}>
+                    {
+                        contents.map( (obj, index) => {
+                            return <ChatListUi obj={obj} key={index} email={state.email} contents={contents} />
+                        })
+                        
+                    }
+                </main>
+                <footer className={styles.footer_css}>
+                    <input 
+                    className={styles.input_css} 
+                    onKeyDown={onKeyDown} 
+                    ref={inputRef} 
+                    maxLength="45"
+                    />
+                </footer>
             </main>
-            <footer className={styles.footer_css}>
-                <input 
-                className={styles.input_css} 
-                onKeyDown={onKeyDown} 
-                ref={inputRef} 
-                maxLength="45"
-                />
-            </footer>
-        </main>
+        </>
     )
 }
 
@@ -258,13 +262,18 @@ const ChatListUi = ({obj, email, contents}) => {
             { obj.date !== (contents[obj.order-2] === undefined ? "" : contents[obj.order-2].date ) ? 
             <div style={{
                 "textAlign": "center",
-                "padding": "80px"
+                "padding": "50px"
             }}>
                 <b style={{
-                    "backgroundColor":"#cecece",
-                    "borderRadius":"15px",
-                    "padding":"10px"
-                }}>
+                    "backgroundColor":"rgb(53 55 59)",
+                    "color":"rgb(170 171 173)",
+                    "borderRadius":"6px",
+                    "padding":"10px",
+                    "fontSize": "12px",
+                    "opacity": "0.5",
+                    "cursor": "pointer",
+                    "transition": "all 1"
+                }} onMouseOver={(e)=>{ e.target.style.opacity = "1"; }} onMouseOut={(e)=>{ e.target.style.opacity = "0.5"; }} >
                     { obj.date }
                 </b>
             </div>

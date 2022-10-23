@@ -5,6 +5,10 @@ import { useNavigate } from "react-router-dom";
 
 const Oauth = () => {
 
+    const divsub1Ref = React.useRef();
+    //divsub1Ref.current.style.padding = "";
+    //debugger;
+
     const navigate = useNavigate();
 
     const oauthConnect = () => {
@@ -37,7 +41,7 @@ const Oauth = () => {
 
     return(
         <div className={styles.div_main}>
-            <div className={styles.div_sub_1}>
+            <div className={styles.div_sub_1} ref={divsub1Ref}>
                 <h2 className={styles.h2_name}>tallk_ch</h2>
                 <h1 className={styles.h1_contents}>talk_ch 에서 <br/> 이야기를 펼쳐보세요</h1>
                 <button className={styles.btn_google_auth} onClick={oauthConnect}>Google 로그인</button>
