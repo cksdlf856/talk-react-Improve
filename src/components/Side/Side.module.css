@@ -27,6 +27,7 @@ aside::-webkit-scrollbar-thumb{
     grid-template-rows: 10px 40px;
     column-gap: 20px;
     cursor: pointer;
+    
 }
 
 .img_profile{

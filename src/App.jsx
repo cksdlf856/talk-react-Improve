@@ -2,7 +2,7 @@ import React from "react";
 import { HashRouter, Routes, Route } from "react-router-dom";
 
 import Header from "./components/Header/Header";
-import Chat from "./components/Chat/Chat";
+import Side from "./components/Side/Side";
 import Oauth from "./components/Oauth/Oauth";
 
 function App() {
@@ -11,7 +11,7 @@ function App() {
       <Header />
       <Routes>
         <Route path="/" element={<Oauth />} />
-        <Route path="/chat" element={<Chat />} />
+        <Route path="/side" element={<Side />} />
       </Routes>
     </HashRouter>
   );

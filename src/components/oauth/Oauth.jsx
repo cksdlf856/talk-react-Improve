@@ -6,8 +6,6 @@ import { useNavigate } from "react-router-dom";
 const Oauth = () => {
 
     const divsub1Ref = React.useRef();
-    //divsub1Ref.current.style.padding = "";
-    //debugger;
 
     const navigate = useNavigate();
 
@@ -24,7 +22,7 @@ const Oauth = () => {
             //user.providerData[0].displayName
             //user.providerData[0].email
 
-            navigate('/chat', {state: user.providerData[0]});
+            navigate('/side', {state: user.providerData[0]});
             
             
         }).catch((error) => {
@@ -47,7 +45,7 @@ const Oauth = () => {
                 <button className={styles.btn_google_auth} onClick={oauthConnect}>Google 로그인</button>
             </div>
             <div>
-
+                <img src="img/img_house_evening.png" style={{"width":"100%"}} alt=""/>
             </div>
         </div>
     )
