@@ -2,13 +2,12 @@ import React from "react";
 import styles from "./Chat.module.css";
 
 import { db } from "../../firebase";
-import { doc, getDocs, collection, setDoc, onSnapshot, query, where, orderBy, updateDoc, arrayUnion } from "firebase/firestore";
+import { doc, getDocs, collection, setDoc, addDoc, onSnapshot, query, where, orderBy, updateDoc, arrayUnion } from "firebase/firestore";
 
 
 const Chat = ({state}) => {
 
-    const [test, setTest] = React.useState([]);
-    debugger;
+    //debugger;
 
     
     // React.useEffect(()=>{
@@ -86,92 +85,79 @@ const Chat = ({state}) => {
             const month = date.getMonth()+1;
             const day = date.getDate();
 
-            //const msgSize = test.length+1;
-            const msgSize = state.content.length;
 
-            //local 내가 쓴 글 작업.
-            // setTest((contents)=>{
-            //     return[
-            //         ...contents,
-            //         { 
-            //             chat: e.target.value,
-            //             from: state.displayName, 
-            //             time: hours + ":" + minutes,
-            //             date: year+"-"+month+"-"+day,
-            //             email: state.email,
-            //             order: msgSize
-            //         }
-            //     ]
-            // })
+            const msgSize = (undefined === state.content ? 0 : state.content.length);
 
-            
+
+            let roomName = state.rooms[state.index].roomName;
             
             //상대방과 최초 대화시 방 만들어주기.
-            if ( 1 === msgSize ){
+            if ( 0 === msgSize ){
                 
-                // ==================================
-                // firebase 유저 채팅 리스트 push
-                // ==================================
+                //총 채팅방 조회
+                const query = await getDocs(collection(db, "rooms")); 
+                
+                //채팅방 문서를 먼저 말들어줘야함. 문서를 먼저 만들지 않고 메세지를 쌓으면 쿼리상 나타나지 않음.
+                await setDoc(doc(db, "rooms", "room"+query.size), {}); 
+
+                roomName = "room"+query.size;
+
                 // const usersRef = collection(db, "users");
-                // await setDoc(doc(usersRef, state.email), {
+                // await updateDoc(doc(usersRef, state.email), {
                 //     email: state.email,
                 //     roomList: "room"+state.rooms.length
                 // });
 
+                 
+                const usersRef = collection(db, "users");
 
-                // ==================================
-                // firebase 상대방 채팅 리스트 push
-                // ==================================
-                // const usersRef2 = collection(db, "users");
-                // await setDoc(doc(usersRef2, state.rooms[state.index].emailY), {
-                //     email: state.rooms[state.index].emailY,
-                //     roomList: "room"+state.rooms.length
-                // });
+                //내 채팅방 만들기
+                await updateDoc(doc(usersRef, state.email), {
+                    email: state.email,
+                    roomList: arrayUnion(
+                        {
+                            date: year+"-"+month+"-"+day,
+                            emailY: "cksdlf4321@gmail.com",
+                            img: "./img/img_profile.png",
+                            name: "박찬일",
+                            roomName: roomName,
+                            titleContents: e.target.value
+                        }
+                    )
+                });
+
+                //상대 채팅방 만들기 
+                await updateDoc(doc(usersRef, "cksdlf4321@gmail.com"), {
+                    email: "cksdlf4321@gmail.com",
+                    roomList: arrayUnion(
+                        {
+                            date: year+"-"+month+"-"+day,
+                            emailY: state.email,
+                            img: "./img/img_profile.png",
+                            name: state.displayName,
+                            roomName: roomName,
+                            titleContents: e.target.value
+                        }
+                    )
+                });
 
             }
 
-
             // firebase 채팅 push
-            // const roomsRef = collection(db, "rooms/room"+ state.index +"/msges");
-            // await setDoc(doc(roomsRef, "msg"+msgSize), {
-            //     chat: e.target.value,
-            //     from: state.displayName, 
-            //     time: hours + ":" + minutes, 
-            //     date: year+"-"+month+"-"+day,
-            //     email: state.email,
-            //     order: msgSize
-            // });
-
-            const roomsRef = collection(db, "users/"+ state.email);
-            // await setDoc(doc(roomsRef, "msg"+msgSize), {
-            //     chat: e.target.value,
-            //     from: state.displayName, 
-            //     time: hours + ":" + minutes, 
-            //     date: year+"-"+month+"-"+day,
-            //     email: state.email,
-            //     order: msgSize
-            // });
-
+            const roomsRef = collection(db, "rooms/"+ roomName +"/msges");
+            await setDoc(doc(roomsRef, "msg"+(msgSize+1)), {
+                chat: e.target.value,
+                from: state.displayName, 
+                time: hours + ":" + minutes, 
+                date: year+"-"+month+"-"+day,
+                email: state.email,
+                order: msgSize+1
+            });
 
             debugger;
-            // await updateDoc(roomsRef.id., {
-            //     msges: arrayUnion(
-            //         {
-            //             chat: e.target.value,
-            //             from: state.displayName, 
-            //             time: hours + ":" + minutes, 
-            //             date: year+"-"+month+"-"+day,
-            //             email: state.email,
-            //             order: msgSize
-            //         }
-            //     )
-            // });
-            //debugger;
 
             //텍스트창 초기화
             e.target.value = "";
-
-            //setTest(1);
             
         }
 
@@ -182,23 +168,21 @@ const Chat = ({state}) => {
     
     React.useEffect(()=>{
         
-        if( 0 === state.content.length ) return;
+        const contentLength = (undefined === state.content ? 0 : state.content.length);
+
+        if( 0 === contentLength ) return;
 
         // setTest(
         //     state.content
         // );
-        debugger;
+        //debugger;
+
+        //최신 채팅 업데이드 시 스크롤 하단으로 이동.
+        const chatScroll = document.getElementById("main_div_chat");
+        chatScroll.scrollTop = mainRef.current.scrollHeight;
         
         
     },[state.content]); //[state.content] 가 바뀔때마다 이벤트 발생.
-
-    //최신 채팅 업데이드 시 스크롤 하단으로 이동.
-    React.useEffect(()=>{
-        
-        const chatScroll = document.getElementById("main_div_chat");
-        chatScroll.scrollTop = mainRef.current.scrollHeight;
-
-    },[test])
 
     return(
         

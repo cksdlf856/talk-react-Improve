@@ -9,24 +9,18 @@ import { doc, getDocs, collection, setDoc, onSnapshot, query, where, orderBy } f
 import Chat from "../Chat/Chat";
 
 const Side = () => {
-
+    //debugger;
     const { state } = useLocation();
     const [index, setIndex] = React.useState(-1);
     const [userRooms, setUserRooms] = React.useState([]);
     const [userContent, setUserContent] = React.useState([]);
     //const [userContents, setUserContents] = React.useState([]);
     
-
     const roomListRef = React.useRef([]);
-    //const roomNameRef = React.useRef([]);
-    //const roomListLengthRef = React.useRef(0);
-    //const iRef = React.useRef(0);
-
-    //const [forRoof, setForRoof] = React.useState(0);
+    
     const forRoof = React.useRef(0);
     const [msges, setMsges] = React.useState([]);
-    
-    //const [data, setData] = React.useState([]);
+    const msgesLength = React.useRef(0);
     
 
     const props = {
@@ -35,10 +29,12 @@ const Side = () => {
         index : index,
         rooms : userRooms,
         content : userContent
-        //data : data
     }
 
     const onClick = (e) => {
+
+        if ( '' !== e.currentTarget.style.backgroundColor ) return;
+
         if ( '' === e.currentTarget.style.backgroundColor ) {
 
             for ( let i = 0 ; i < roomListRef.current.length ; i++ ) {
@@ -47,18 +43,20 @@ const Side = () => {
 
             e.currentTarget.style.backgroundColor = "rgb(33 31 38)";
             
-        } else {
-            e.currentTarget.style.backgroundColor = "";
         }
-        //console.log(userContents);
+        
+        
         console.log(userRooms);
         
         let number = Number(e.currentTarget.id);
-        setIndex(number);//userContents[number][1]
-        //setUserContent(docData.current.firebase);
-        debugger;
-        //setUserContent( 0 === number ? (undefined === userContents[number][1] ? userContents[1]:userContents[number][1]) : userContents[number] );
+        setIndex(number);
+        //setUserContent( 1 === msges.length ? [msges[number]] : msges );
+        setUserContent(msges[number]);
+        msgesLength.current = msges[number].length;
+        
         //debugger;
+        //setUserContent( 0 === number ? (undefined === userContents[number][1] ? userContents[1]:userContents[number][1]) : userContents[number] );
+        
     }
 
     const refRoomData = (ref, index) => {
@@ -68,69 +66,68 @@ const Side = () => {
     }
 
 
-    // React.useEffect(()=>{
+    React.useEffect(()=>{
         
-    //     const unsubscribe = onSnapshot(collection(db, "rooms/room"+index+"/msges"), (snapshot) => {
+        if ( -1 === index ) return;
 
-    //         //debugger;
-    //         if ( -1 === index ) return;
+        const unsubscribe = onSnapshot(collection(db, "rooms/"+userRooms[index].roomName+"/msges"), (snapshot) => {
+            //debugger;
+            
 
+            snapshot.docChanges().forEach((change) => {
 
-    //         snapshot.docChanges().forEach((change) => {
+                const source = change.doc.metadata.hasPendingWrites ? "Local" : "Server";
+                console.log(source);
+                
+                //debugger;
 
-    //             const source = change.doc.metadata.hasPendingWrites ? "Local" : "Server";
-    //             console.log(source);
-    //             //debugger; snapshot.docChanges()[0].doc.id
-    //             //debugger;
+                const msgNumber = Number(change.doc.id.replace('msg',''));
 
-    //             const msgNumber = Number(change.doc.id.replace('msg',''));
+                if ( msgesLength.current >= msgNumber ) return;
 
-    //             if ( userContent.length >= msgNumber ) return;
-
-    //             if (change.type === "added") {
-    //                 //console.log("New city: ", change.doc.data());
+                if (change.type === "added") {
+                    //console.log("New city: ", change.doc.data());
                     
-    //                 console.log(change.doc.data().chat);
+                    console.log(change.doc.data().chat);
                     
-    //                 // setTest(
-    //                 //     (prevState)=> {
-    //                 //         return [...prevState, 
-    //                 //             { 
-    //                 //                 chat: change.doc.data().chat,
-    //                 //                 from: change.doc.data().from, 
-    //                 //                 time: change.doc.data().time,
-    //                 //                 date: change.doc.data().date,
-    //                 //                 email: change.doc.data().email,
-    //                 //                 order: change.doc.data().order
-    //                 //             } 
-    //                 //         ]
-    //                 //     }
-    //                 // );
-    //                 //debugger;
+                    const msgJson = {
+                        chat: change.doc.data().chat,
+                        from: change.doc.data().from, 
+                        time: change.doc.data().time,
+                        date: change.doc.data().date,
+                        email: change.doc.data().email,
+                        order: change.doc.data().order  
+                    }
+
+                    //debugger;
+                    //setUserContent([msges[number]]);
+                    setUserContent((prevState)=>{
+                        return [...prevState, msgJson]
+                    });
+                    msgesLength.current = msgesLength.current + 1;
                     
-    //             }
-    //             if (change.type === "modified") {
+                }
+                if (change.type === "modified") {
                     
-    //             }
-    //             if (change.type === "removed") {
+                }
+                if (change.type === "removed") {
                     
-    //             }
+                }
         
-    //         });
+            });
 
 
 
-    //     },(error) => {
+        },(error) => {
               
-    //         console.log("=========error============");
-    //         console.log(error);
-    //     });
+            console.log("=========error============");
+            console.log(error);
+        });
         
 
-    // },[])
+    })
 
     React.useEffect(()=> {
-        debugger;
         
         const q = query(collection(db, "users"), where("email", "==", state.email));
 
@@ -145,10 +142,10 @@ const Side = () => {
                             
                             return doc.data().roomList;
                         });
-                        
+                        //debugger;
                         //roomNameRef.current = doc.data().roomList;
                     }
-                    debugger;
+                    
                 });
             //해당 email 유저가 없다면 만들어줌.    
             } else if ( 0 === query.size ){ 
@@ -158,6 +155,7 @@ const Side = () => {
                 const usersRef = collection(db, "users");
                 await setDoc(doc(usersRef, state.email), {
                     email: state.email,
+                    name: state.displayName,
                     roomList: []
                 });
             }
@@ -169,126 +167,46 @@ const Side = () => {
     },[])
 
     React.useEffect(()=> {
-        debugger;
+        
         if ( 0 === userRooms.length ) return;
         if ( userRooms.length-1 < forRoof.current ) return;
+        if ( '' === userRooms[forRoof.current].roomName ) return; //채팅방이 안만들어진 상태.
 
         const q = query(collection(db, "rooms/"+userRooms[forRoof.current].roomName+"/msges"), orderBy("order"));
-        debugger;
+        //debugger;
         async function msgList(){
-            debugger;
+            //debugger;
             const query = await getDocs(q);
             
             if ( 0 < query.size ){
-                debugger;
+                
                 
                 let list = [];
                 query.forEach((doc) => {
                    
                     list.push(doc.data());
-                    debugger;
+                    
                 });
 
-                debugger;
+                
 
                 if ( 0 === msges.length ){
-                    setMsges(list);
+                    setMsges([list]);
                 } else {
                     setMsges((prevState)=>{
-                        return [prevState, list]
+                        return [...prevState, list]
                     })
                 }
 
                 forRoof.current = forRoof.current + 1;
-
+                //debugger;
             }
-            debugger;
+            
 
         }
         msgList();
-
-        // setForRoof((index)=>{
-        //     return index + 1
-        // });
         
-    })
-
-    // React.useEffect( ()=>{
-        
-    //     //debugger;
-    //     const q = query(collection(db, "users"), where("email", "==", state.email));
-    //     const qq = query(collection(db, "rooms/room"+(iRef.current)+"/msges"), orderBy("order"));
-    //     //debugger;
-        
-    //     async function chatList(){
-
-    //         if( 0 === iRef.current ){
-
-    //             const query = await getDocs(q);
-
-    //             //해당 email 유저가 있다면 채팅 리스트 불러옴.
-    //             if ( 1 === query.size ){ 
-    //                 query.forEach((doc) => {
-    //                     if ( 0 !== doc.data().roomList.length ) {
-    //                         setUserRooms(()=>{
-    //                             return doc.data().roomList;
-    //                         });
-    //                         roomListLengthRef.current = doc.data().roomList.length;
-    //                         //debugger;
-    //                     }
-    //                     debugger;
-    //                 });
-    //             //해당 email 유저가 없다면 만들어줌.    
-    //             } else if ( 0 === query.size ){ 
-    //                 // ==================================
-    //                 // firebase 유저 채팅 리스트 push
-    //                 // ==================================
-    //                 const usersRef = collection(db, "users");
-    //                 await setDoc(doc(usersRef, state.email), {
-    //                     email: state.email,
-    //                     roomList: []
-    //                 });
-    //             }
-    //         //debugger;
-    //         }
-
-
-
-    //         if ( iRef.current === roomListLengthRef.current ) return;
-
-    //         const list = [];
-    //         const querySnapshot = await getDocs(qq);
-    //         querySnapshot.forEach((doc) => {
-
-    //             list.push({
-    //                 chat: doc.data().chat,
-    //                 time: doc.data().time,
-    //                 email: doc.data().email,
-    //                 from: doc.data().from,
-    //                 date: doc.data().date,
-    //                 order: doc.data().order
-    //             });
-
-    //         });
-            
-    //         //debugger;
-
-    //         setUserContents((prevState)=>{
-    //             // debugger;
-    //             // if ( 0 === prevState.length ) {
-    //             //     debugger;
-    //             //     return [list];
-    //             // } 
-    //             return [[...prevState], list];
-    //         });
-
-    //         iRef.current = iRef.current + 1;
-    //         //debugger;
-
-    //     }
-    //     chatList();
-
-    // },[userContents])
+    })    
 
 
     

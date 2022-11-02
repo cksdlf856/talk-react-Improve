@@ -19,11 +19,54 @@ i{
     filter: invert(0.8);
 }
 
-.ip_search{
+.ipt_search{
     background-color: rgb(26 29 33);
     padding: 10px;
     padding-right: 50px;
     border-radius: 10px;
     border: 1px solid rgb(204, 204, 204);
     color: rgb(204, 204, 204);
+}
+
+.div_search_auto{
+    width: 223px;
+    height: 0px;
+    border: 1px solid rgb(204, 204, 204);
+    position: absolute;
+    margin-top: 45px;
+    border-radius: 10px;
+    background-color: rgb(18 16 22);
+    overflow-y: overlay;
+    transition: all 1s;
+    visibility: hidden;
+}
+
+.div_search_auto::-webkit-scrollbar{
+    width: 7px;
+    background-color: rgb(18 16 22);
+    border-radius: 50%;
+}
+
+.div_search_auto::-webkit-scrollbar-thumb{
+    border-radius: 10px;
+    background-color: rgb(209 210 211);
+}
+
+ul{
+    list-style: none;
+    margin: 0px;
+    padding: 5px;
+    max-width: 212px;
+    width: 100%;
+    font-size: 13px;
+    color: rgb(209 210 211);
+}
+
+li{
+    padding: 10px;
+    cursor: pointer;
+}
+
+.ip_search:hover{
+    cursor: text;
 }
