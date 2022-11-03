@@ -9,8 +9,9 @@ import { doc, getDocs, collection, setDoc, onSnapshot, query, where, orderBy } f
 import Chat from "../Chat/Chat";
 
 const Side = () => {
-    //debugger;
+    debugger;
     const { state } = useLocation();
+    
     const [index, setIndex] = React.useState(-1);
     const [userRooms, setUserRooms] = React.useState([]);
     const [userContent, setUserContent] = React.useState([]);
@@ -22,7 +23,6 @@ const Side = () => {
     const [msges, setMsges] = React.useState([]);
     const msgesLength = React.useRef(0);
     
-
     const props = {
         email : state.email,
         displayName : state.displayName,
@@ -30,6 +30,85 @@ const Side = () => {
         rooms : userRooms,
         content : userContent
     }
+
+    React.useEffect(()=>{
+        //debugger;
+        //console.log(state);
+
+        if ( undefined === state.emailY ) return;
+
+        let userRoomsCheck = false;
+        userRooms.forEach((data, index)=>{
+            if(state.emailY === data.emailY) {
+                userRoomsCheck = true;
+                roomListRef.current[index].style.backgroundColor = "rgb(33 31 38)";
+                setIndex(index);
+                setUserContent(msges[index]);
+                msgesLength.current = msges[index].length;
+            }
+        })
+
+        if ( userRoomsCheck ) return;
+        
+
+        debugger;
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = date.getMonth()+1;
+        const day = date.getDate();
+
+        const stateRef = {
+            date: year+"-"+month+"-"+day,
+            emailY: state.emailY,
+            img: "./img/img_profile.png",
+            name: state.nameY,
+            roomName: "",
+            titleContents: "",
+        }
+
+        setUserRooms((prevState)=>{
+            return [...prevState, stateRef]
+        })
+
+        debugger;
+        //sideListClick();
+
+    },[state])
+
+    React.useEffect(()=>{
+        
+        if ( undefined === state.emailY ) return;
+        
+        for ( let i = 0 ; i < roomListRef.current.length ; i++ ) {
+            roomListRef.current[i].style.backgroundColor = "";
+        }
+        
+        // let userRoomsEmail = ''; 
+        // userRooms.forEach((data)=>{
+        //     if ( state.emailY === data.emailY ){
+        //         userRoomsEmail = data.emailY;
+        //     }
+        // })
+
+        // if ( '' === userRoomsEmail ){
+        roomListRef.current[roomListRef.current.length-1].style.backgroundColor = "rgb(33 31 38)";
+        setIndex(roomListRef.current.length-1);
+        //} 
+
+
+    },[userRooms])
+
+    // const sideListClick = () =>{
+    //     for ( let i = 0 ; i < roomListRef.current.length ; i++ ) {
+    //         roomListRef.current[i].style.backgroundColor = "";
+    //     }
+
+    //     roomListRef.current[roomListRef.current.length].style.backgroundColor = "rgb(33 31 38)";
+
+    //     setIndex((prevState)=>{
+    //         return prevState+1
+    //     });
+    // }
 
     const onClick = (e) => {
 
@@ -45,17 +124,17 @@ const Side = () => {
             
         }
         
-        
         console.log(userRooms);
         
         let number = Number(e.currentTarget.id);
         setIndex(number);
         //setUserContent( 1 === msges.length ? [msges[number]] : msges );
+        debugger;
+
+        if ( undefined === msges[number] ) return; //새로운 상대와 처음 대화시 메시지가 없는 상태.
+
         setUserContent(msges[number]);
         msgesLength.current = msges[number].length;
-        
-        //debugger;
-        //setUserContent( 0 === number ? (undefined === userContents[number][1] ? userContents[1]:userContents[number][1]) : userContents[number] );
         
     }
 
@@ -65,14 +144,14 @@ const Side = () => {
         
     }
 
-
     React.useEffect(()=>{
         
         if ( -1 === index ) return;
+        if ( '' === userRooms[index].roomName ) return; //새로운 상대와 처음 대화시 채팅방이 없는 상태.
+        debugger;
 
         const unsubscribe = onSnapshot(collection(db, "rooms/"+userRooms[index].roomName+"/msges"), (snapshot) => {
             //debugger;
-            
 
             snapshot.docChanges().forEach((change) => {
 
@@ -86,7 +165,6 @@ const Side = () => {
                 if ( msgesLength.current >= msgNumber ) return;
 
                 if (change.type === "added") {
-                    //console.log("New city: ", change.doc.data());
                     
                     console.log(change.doc.data().chat);
                     
@@ -99,8 +177,6 @@ const Side = () => {
                         order: change.doc.data().order  
                     }
 
-                    //debugger;
-                    //setUserContent([msges[number]]);
                     setUserContent((prevState)=>{
                         return [...prevState, msgJson]
                     });
@@ -116,19 +192,16 @@ const Side = () => {
         
             });
 
-
-
         },(error) => {
               
             console.log("=========error============");
             console.log(error);
         });
         
-
     })
 
     React.useEffect(()=> {
-        
+
         const q = query(collection(db, "users"), where("email", "==", state.email));
 
         async function chatList(){
@@ -142,11 +215,9 @@ const Side = () => {
                             
                             return doc.data().roomList;
                         });
-                        //debugger;
-                        //roomNameRef.current = doc.data().roomList;
-                    }
-                    
+                    } 
                 });
+
             //해당 email 유저가 없다면 만들어줌.    
             } else if ( 0 === query.size ){ 
                 // ==================================
@@ -159,7 +230,6 @@ const Side = () => {
                     roomList: []
                 });
             }
-
 
         }
         chatList();
@@ -180,15 +250,12 @@ const Side = () => {
             
             if ( 0 < query.size ){
                 
-                
                 let list = [];
                 query.forEach((doc) => {
                    
                     list.push(doc.data());
                     
                 });
-
-                
 
                 if ( 0 === msges.length ){
                     setMsges([list]);
@@ -201,17 +268,14 @@ const Side = () => {
                 forRoof.current = forRoof.current + 1;
                 //debugger;
             }
-            
 
         }
         msgList();
         
     })    
-
-
     
     return(
-        <>
+        <>  
             <aside>
                 {
                     userRooms.map((obj, index)=>{

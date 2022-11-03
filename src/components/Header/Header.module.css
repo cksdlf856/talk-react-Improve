@@ -20,6 +20,7 @@ i{
 }
 
 .ipt_search{
+    width: 163px;
     background-color: rgb(26 29 33);
     padding: 10px;
     padding-right: 50px;
@@ -37,7 +38,7 @@ i{
     border-radius: 10px;
     background-color: rgb(18 16 22);
     overflow-y: overlay;
-    transition: all 1s;
+    transition: all 0.7s;
     visibility: hidden;
 }
 

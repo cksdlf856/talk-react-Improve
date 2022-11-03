@@ -3,6 +3,8 @@ import styles from "./Header.module.css";
 
 import { db } from "../../firebase";
 import { doc, getDocs, collection, setDoc, addDoc, onSnapshot, query, where, orderBy, updateDoc, arrayUnion } from "firebase/firestore";
+import { useNavigate, useLocation } from "react-router-dom";
+//import Side from "../Side/Side";
 
 const Header = () => {
 
@@ -15,23 +17,35 @@ const Header = () => {
     const liRef = React.useRef([]);
     const divAutoRef = React.useRef();
 
-    React.useEffect(()=>{
-        const q = query(collection(db, "users"), orderBy("email"));
-        async function userList(){
+    const navigate = useNavigate();
+    const { state } = useLocation();
+    
 
+    React.useEffect(()=>{
+        //debugger;
+        const unsubscribe = onSnapshot(collection(db, "users"), (snapshot) => {
             const list = [];
-            const query = await getDocs(q);
-            query.forEach((doc) => {
-                list.push(doc.data());
-                console.log(doc.data().email);
+            snapshot.docChanges().forEach((change) => {
+
+                if (change.type === "added") {
+
+                    //console.log(change.doc.data().email);
+                    list.push(change.doc.data());
+                    //debugger;
+                }
+
             })
-            userRef.current = list;
             
             //debugger;
-        }
-        userList()
-    },[]);
+            if ( 0 === userRef.current.length ){
+                userRef.current = list;
+            } else {
+                userRef.current = [...userRef.current, ...list];
+            }
 
+        })
+
+    },[])
     
     const onChangeSearch = (e) => {
         console.log(e.target.value);
@@ -42,15 +56,11 @@ const Header = () => {
             setUser([]); 
             return;     
         }
-        //debugger;
-
 
         const userObj = userRef.current.find((data)=>{
             console.log(data.email);
             return data.email.includes(e.target.value)
         })
-
-        //console.log(userObj);
 
         if ( undefined === userObj ) return;
 
@@ -77,8 +87,6 @@ const Header = () => {
 
     const onClick = (e) => {
 
-        //debugger;
-
         if ( '' === e.target.style.backgroundColor ){
             
             liRef.current.forEach((ref)=>{
@@ -90,11 +98,37 @@ const Header = () => {
         } else if ( '' !== e.target.style.backgroundColor ){
             e.target.style.backgroundColor = '';
         }
+        //console.log(state);
+
+        let refJson = {
+            emailY: "", 
+            name: ""
+        }
+
+        userRef.current.forEach((ref)=>{
+            if ( ref.email === e.target.innerHTML ){
+                refJson.emailY = ref.email;
+                refJson.name = ref.name;
+            }
+        })
+
+        const stateJson = {
+            email: state.email,
+            displayName: state.displayName,
+            //date: "2022-10-28",
+            emailY: refJson.emailY,
+            //img: "./img/img_profile.png",
+            nameY: refJson.name,
+            //roomName: "",
+            //titleContents: "",
+        }
+
+        navigate('/side', {state: stateJson});
 
     }
 
     const onClickSearch = () => {
-        
+
         divAutoRef.current.style.marginTop = "166px";
         divAutoRef.current.style.height = '120px';
         divAutoRef.current.style.visibility = 'visible';  
@@ -102,8 +136,11 @@ const Header = () => {
 
     window.addEventListener('click',(e)=>{
         
+        console.log(e.target.id);
+        console.log(e.target.parentElement);
         if( 'ipt_search' === e.target.id ) return;
         if( 'div_search_auto' === e.target.id  ) return;
+        if( 'div_search_auto' === e.target.parentElement.id ) return;
         if( 'div_search_auto' === e.target.parentElement.parentElement.id ) return;
 
         if( 'visible' === divAutoRef.current.style.visibility ){

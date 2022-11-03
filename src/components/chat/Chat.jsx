@@ -9,69 +9,6 @@ const Chat = ({state}) => {
 
     //debugger;
 
-    
-    // React.useEffect(()=>{
-        
-    //     const unsubscribe = onSnapshot(collection(db, "rooms/room"+state.index+"/msges"), (snapshot) => {
-
-    //         debugger;
-    //         if ( -1 === state.index ) return;
-
-    //         let snapList = [];
-
-    //         snapshot.docChanges().forEach((change) => {
-
-    //             const source = change.doc.metadata.hasPendingWrites ? "Local" : "Server";
-    //             console.log(source);
-    //             //debugger; snapshot.docChanges()[0].doc.id
-    //             //debugger;
-
-    //             const msgNumber = Number(change.doc.id.replace('msg',''));
-
-    //             if ( state.content.length >= msgNumber ) return;
-
-    //             if (change.type === "added") {
-    //                 //console.log("New city: ", change.doc.data());
-                    
-    //                 console.log(change.doc.data().chat);
-                    
-    //                 // setTest(
-    //                 //     (prevState)=> {
-    //                 //         return [...prevState, 
-    //                 //             { 
-    //                 //                 chat: change.doc.data().chat,
-    //                 //                 from: change.doc.data().from, 
-    //                 //                 time: change.doc.data().time,
-    //                 //                 date: change.doc.data().date,
-    //                 //                 email: change.doc.data().email,
-    //                 //                 order: change.doc.data().order
-    //                 //             } 
-    //                 //         ]
-    //                 //     }
-    //                 // );
-    //                 //debugger;
-                    
-    //             }
-    //             if (change.type === "modified") {
-                    
-    //             }
-    //             if (change.type === "removed") {
-                    
-    //             }
-        
-    //         });
-
-
-
-    //     },(error) => {
-              
-    //         console.log("=========error============");
-    //         console.log(error);
-    //     });
-        
-
-    // },[])
-
     const onKeyDown = async (e) => {
 
         if ( "Enter" === e.key && "" !== e.target.value ){
@@ -101,13 +38,6 @@ const Chat = ({state}) => {
                 await setDoc(doc(db, "rooms", "room"+query.size), {}); 
 
                 roomName = "room"+query.size;
-
-                // const usersRef = collection(db, "users");
-                // await updateDoc(doc(usersRef, state.email), {
-                //     email: state.email,
-                //     roomList: "room"+state.rooms.length
-                // });
-
                  
                 const usersRef = collection(db, "users");
 
@@ -172,11 +102,6 @@ const Chat = ({state}) => {
 
         if( 0 === contentLength ) return;
 
-        // setTest(
-        //     state.content
-        // );
-        //debugger;
-
         //최신 채팅 업데이드 시 스크롤 하단으로 이동.
         const chatScroll = document.getElementById("main_div_chat");
         chatScroll.scrollTop = mainRef.current.scrollHeight;
@@ -198,14 +123,6 @@ const Chat = ({state}) => {
                     })
                     :
                     null
-                }
-                {
-                    // undefined !== test ? 
-                    // test.map( (obj, index) => {
-                    //     return <ChatListUi obj={obj} key={index} email={state.email} contents={test} />
-                    // })
-                    // :
-                    // null
                 }
             </main>
             <footer className={styles.footer_css}>
