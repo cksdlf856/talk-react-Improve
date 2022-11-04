@@ -12,7 +12,8 @@ const Side = () => {
     debugger;
     const { state } = useLocation();
     
-    const [index, setIndex] = React.useState(-1);
+    //const [index, setIndex] = React.useState(-1);
+    const indexRef = React.useRef(-1);
     const [userRooms, setUserRooms] = React.useState([]);
     const [userContent, setUserContent] = React.useState([]);
     //const [userContents, setUserContents] = React.useState([]);
@@ -26,7 +27,7 @@ const Side = () => {
     const props = {
         email : state.email,
         displayName : state.displayName,
-        index : index,
+        index : indexRef.current,
         rooms : userRooms,
         content : userContent
     }
@@ -40,11 +41,18 @@ const Side = () => {
         let userRoomsCheck = false;
         userRooms.forEach((data, index)=>{
             if(state.emailY === data.emailY) {
+
+                for ( let i = 0 ; i < roomListRef.current.length ; i++ ) {
+                    roomListRef.current[i].style.backgroundColor = "";
+                }
+
                 userRoomsCheck = true;
                 roomListRef.current[index].style.backgroundColor = "rgb(33 31 38)";
-                setIndex(index);
+                //setIndex(index);
+                indexRef.current = index;
                 setUserContent(msges[index]);
                 msgesLength.current = msges[index].length;
+                debugger;
             }
         })
 
@@ -70,6 +78,10 @@ const Side = () => {
             return [...prevState, stateRef]
         })
 
+        setMsges((prevState)=>{
+            return [...prevState, []]
+        })
+
         debugger;
         //sideListClick();
 
@@ -78,23 +90,20 @@ const Side = () => {
     React.useEffect(()=>{
         
         if ( undefined === state.emailY ) return;
+        if ( 0 === roomListRef.current.length ) return;
         
         for ( let i = 0 ; i < roomListRef.current.length ; i++ ) {
             roomListRef.current[i].style.backgroundColor = "";
         }
-        
-        // let userRoomsEmail = ''; 
-        // userRooms.forEach((data)=>{
-        //     if ( state.emailY === data.emailY ){
-        //         userRoomsEmail = data.emailY;
-        //     }
-        // })
 
         // if ( '' === userRoomsEmail ){
         roomListRef.current[roomListRef.current.length-1].style.backgroundColor = "rgb(33 31 38)";
-        setIndex(roomListRef.current.length-1);
+        //setIndex(roomListRef.current.length-1);
+        indexRef.current = roomListRef.current.length-1;
+        setUserContent(msges[roomListRef.current.length-1]);
+        msgesLength.current = msges[roomListRef.current.length-1].length;
         //} 
-
+        debugger;
 
     },[userRooms])
 
@@ -127,7 +136,8 @@ const Side = () => {
         console.log(userRooms);
         
         let number = Number(e.currentTarget.id);
-        setIndex(number);
+        //setIndex(number);
+        indexRef.current = number;
         //setUserContent( 1 === msges.length ? [msges[number]] : msges );
         debugger;
 
@@ -145,12 +155,13 @@ const Side = () => {
     }
 
     React.useEffect(()=>{
-        
-        if ( -1 === index ) return;
-        if ( '' === userRooms[index].roomName ) return; //새로운 상대와 처음 대화시 채팅방이 없는 상태.
+        debugger;
+        //if ( -1 === index ) return;
+        if ( -1 === indexRef.current ) return;
+        if ( '' === userRooms[indexRef.current].roomName ) return; //새로운 상대와 처음 대화시 채팅방이 없는 상태.
         debugger;
 
-        const unsubscribe = onSnapshot(collection(db, "rooms/"+userRooms[index].roomName+"/msges"), (snapshot) => {
+        const unsubscribe = onSnapshot(collection(db, "rooms/"+userRooms[indexRef.current].roomName+"/msges"), (snapshot) => {
             //debugger;
 
             snapshot.docChanges().forEach((change) => {
@@ -237,7 +248,7 @@ const Side = () => {
     },[])
 
     React.useEffect(()=> {
-        
+        debugger;
         if ( 0 === userRooms.length ) return;
         if ( userRooms.length-1 < forRoof.current ) return;
         if ( '' === userRooms[forRoof.current].roomName ) return; //채팅방이 안만들어진 상태.

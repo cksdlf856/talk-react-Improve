@@ -38,7 +38,7 @@ i{
     border-radius: 10px;
     background-color: rgb(18 16 22);
     overflow-y: overlay;
-    transition: all 0.7s;
+    transition: all 0.6s;
     visibility: hidden;
 }
 

@@ -50,6 +50,8 @@ const Header = () => {
     const onChangeSearch = (e) => {
         console.log(e.target.value);
 
+        onClickSearch();
+
         if ( '' === e.target.value && 0 === user.length ) return;
 
         if ( '' === e.target.value && 0 !== user.length ) {
@@ -129,15 +131,17 @@ const Header = () => {
 
     const onClickSearch = () => {
 
+        if ( 'visible' === divAutoRef.current.style.visibility ) return;
+
         divAutoRef.current.style.marginTop = "166px";
         divAutoRef.current.style.height = '120px';
         divAutoRef.current.style.visibility = 'visible';  
     }
 
     window.addEventListener('click',(e)=>{
-        
-        console.log(e.target.id);
-        console.log(e.target.parentElement);
+   
+        if ( null === e.target.parentElement ) return;
+
         if( 'ipt_search' === e.target.id ) return;
         if( 'div_search_auto' === e.target.id  ) return;
         if( 'div_search_auto' === e.target.parentElement.id ) return;

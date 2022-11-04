@@ -7,8 +7,6 @@ import { doc, getDocs, collection, setDoc, addDoc, onSnapshot, query, where, ord
 
 const Chat = ({state}) => {
 
-    //debugger;
-
     const onKeyDown = async (e) => {
 
         if ( "Enter" === e.key && "" !== e.target.value ){
@@ -22,12 +20,11 @@ const Chat = ({state}) => {
             const month = date.getMonth()+1;
             const day = date.getDate();
 
-
             const msgSize = (undefined === state.content ? 0 : state.content.length);
 
-
             let roomName = state.rooms[state.index].roomName;
-            
+            debugger;
+            //return;
             //상대방과 최초 대화시 방 만들어주기.
             if ( 0 === msgSize ){
                 
@@ -47,9 +44,9 @@ const Chat = ({state}) => {
                     roomList: arrayUnion(
                         {
                             date: year+"-"+month+"-"+day,
-                            emailY: "cksdlf4321@gmail.com",
+                            emailY: state.rooms[state.index].emailY,
                             img: "./img/img_profile.png",
-                            name: "박찬일",
+                            name: state.rooms[state.index].name,
                             roomName: roomName,
                             titleContents: e.target.value
                         }
@@ -57,8 +54,8 @@ const Chat = ({state}) => {
                 });
 
                 //상대 채팅방 만들기 
-                await updateDoc(doc(usersRef, "cksdlf4321@gmail.com"), {
-                    email: "cksdlf4321@gmail.com",
+                await updateDoc(doc(usersRef, state.rooms[state.index].emailY), {
+                    email: state.rooms[state.index].emailY,
                     roomList: arrayUnion(
                         {
                             date: year+"-"+month+"-"+day,

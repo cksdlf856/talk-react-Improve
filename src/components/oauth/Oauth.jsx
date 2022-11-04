@@ -40,12 +40,17 @@ const Oauth = () => {
     return(
         <div className={styles.div_main}>
             <div className={styles.div_sub_1} ref={divsub1Ref}>
-                <h2 className={styles.h2_name}>tallk_ch</h2>
-                <h1 className={styles.h1_contents}>talk_ch 에서 <br/> 이야기를 펼쳐보세요</h1>
+                <h1 className={styles.h2_name}>Tolk</h1>
+                <h2 className={styles.h1_contents}>토크 에서 <br/> 이야기를 펼쳐보세요</h2>
                 <button className={styles.btn_google_auth} onClick={oauthConnect}>Google 로그인</button>
             </div>
             <div>
-                <img src="img/img_house_evening.png" style={{"width":"100%"}} alt=""/>
+                <img src="img/flowerImg.svg" style={{"width":"30%", "filter": "invert(1)", "padding": "30px"}} alt=""/>
+                <img src="img/flowerImg.svg" style={{"width":"30%", "filter": "invert(1)"}} alt=""/>
+                <img src="img/flowerImg.svg" style={{"width":"30%", "filter": "invert(1)", "padding": "10px"}} alt=""/>
+                <img src="img/flowerImg.svg" style={{"width":"30%", "filter": "invert(1)", "padding": "5px"}} alt=""/>
+                <img src="img/flowerImg.svg" style={{"width":"30%", "filter": "invert(1)", "padding": "30px"}} alt=""/>
+                <img src="img/flowerImg.svg" style={{"width":"30%", "filter": "invert(1)", "padding": "5px"}} alt=""/>
             </div>
         </div>
     )
