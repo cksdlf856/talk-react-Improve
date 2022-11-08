@@ -42,7 +42,9 @@ const Header = () => {
     },[])
     
     const onChangeSearch = (e) => {
-    
+        
+        if ( null === state ) return;
+
         onClickSearch();
 
         if ( '' === e.target.value && 0 === user.length ) return;
