@@ -2,21 +2,18 @@ import React from "react";
 import styles from "./Side.module.css";
 import { useLocation } from "react-router-dom";
 
-
 import { db } from "../../firebase";
 import { doc, getDocs, collection, setDoc, onSnapshot, query, where, orderBy } from "firebase/firestore";
 
 import Chat from "../Chat/Chat";
 
 const Side = () => {
-    debugger;
+    
     const { state } = useLocation();
     
-    //const [index, setIndex] = React.useState(-1);
     const indexRef = React.useRef(-1);
     const [userRooms, setUserRooms] = React.useState([]);
     const [userContent, setUserContent] = React.useState([]);
-    //const [userContents, setUserContents] = React.useState([]);
     
     const roomListRef = React.useRef([]);
     
@@ -31,11 +28,11 @@ const Side = () => {
         rooms : userRooms,
         content : userContent
     }
+    console.log(props.index);
 
+    //유저 검색 후 클릭 useEffect
     React.useEffect(()=>{
-        //debugger;
-        //console.log(state);
-
+        
         if ( undefined === state.emailY ) return;
 
         let userRoomsCheck = false;
@@ -48,18 +45,26 @@ const Side = () => {
 
                 userRoomsCheck = true;
                 roomListRef.current[index].style.backgroundColor = "rgb(33 31 38)";
-                //setIndex(index);
+                
                 indexRef.current = index;
-                setUserContent(msges[index]);
-                msgesLength.current = msges[index].length;
-                debugger;
+
+                msges.forEach((data, msgIndex)=>{
+
+                    if ( userRooms[index].roomName === data.roomName ){
+                        setUserContent(data.msgList);
+                        msgesLength.current = data.msgList.length;
+                        debugger;
+                    } else if ( msges.length-1 === msgIndex ){
+                        setUserContent([]);
+                        msgesLength.current = 0;
+                    }
+
+                })
             }
         })
 
         if ( userRoomsCheck ) return;
         
-
-        debugger;
         const date = new Date();
         const year = date.getFullYear();
         const month = date.getMonth()+1;
@@ -74,53 +79,57 @@ const Side = () => {
             titleContents: "",
         }
 
-        setUserRooms((prevState)=>{
-            return [...prevState, stateRef]
-        })
+        if ( 0 === userRooms.length ){
+            setUserRooms([stateRef]);
+        } else {
+            setUserRooms((prevState)=>{
+                return [...prevState, stateRef]
+            })
+        }
+        
+        indexRef.current = roomListRef.current.length;
 
-        setMsges((prevState)=>{
-            return [...prevState, []]
-        })
-
-        debugger;
-        //sideListClick();
+        setUserContent([]);
+        msgesLength.current = 0;
 
     },[state])
 
+    //채팅방 리스트 useEffect
     React.useEffect(()=>{
         
         if ( undefined === state.emailY ) return;
         if ( 0 === roomListRef.current.length ) return;
         
         for ( let i = 0 ; i < roomListRef.current.length ; i++ ) {
+            if ( null !== roomListRef.current[i] )
             roomListRef.current[i].style.backgroundColor = "";
         }
-
-        // if ( '' === userRoomsEmail ){
+        
         roomListRef.current[roomListRef.current.length-1].style.backgroundColor = "rgb(33 31 38)";
-        //setIndex(roomListRef.current.length-1);
+        
         indexRef.current = roomListRef.current.length-1;
-        setUserContent(msges[roomListRef.current.length-1]);
-        msgesLength.current = msges[roomListRef.current.length-1].length;
-        //} 
-        debugger;
+
+        if ( '' === userRooms[roomListRef.current.length-1].roomName ){
+            setUserContent([]);
+            msgesLength.current = 0;
+        } else {
+            msges.forEach((data, msgIndex)=>{
+
+                if ( userRooms[roomListRef.current.length-1].roomName === data.roomName ){
+                    setUserContent(data.msgList);
+                    msgesLength.current = data.msgList.length;
+                } else if ( msges.length-1 === msgIndex ){
+                    setUserContent([]);
+                    msgesLength.current = 0;
+                }
+
+            })
+        }
 
     },[userRooms])
 
-    // const sideListClick = () =>{
-    //     for ( let i = 0 ; i < roomListRef.current.length ; i++ ) {
-    //         roomListRef.current[i].style.backgroundColor = "";
-    //     }
-
-    //     roomListRef.current[roomListRef.current.length].style.backgroundColor = "rgb(33 31 38)";
-
-    //     setIndex((prevState)=>{
-    //         return prevState+1
-    //     });
-    // }
-
     const onClick = (e) => {
-
+        
         if ( '' !== e.currentTarget.style.backgroundColor ) return;
 
         if ( '' === e.currentTarget.style.backgroundColor ) {
@@ -133,18 +142,22 @@ const Side = () => {
             
         }
         
-        console.log(userRooms);
-        
         let number = Number(e.currentTarget.id);
-        //setIndex(number);
+        
         indexRef.current = number;
-        //setUserContent( 1 === msges.length ? [msges[number]] : msges );
-        debugger;
+    
+        msges.forEach((data, msgIndex)=>{
 
-        if ( undefined === msges[number] ) return; //새로운 상대와 처음 대화시 메시지가 없는 상태.
+            if ( userRooms[number].roomName === data.roomName ){
+                setUserContent(data.msgList);
+                msgesLength.current = data.msgList.length;
+                debugger;
+            } else if ( msges.length-1 === msgIndex ){
+                setUserContent([]);
+                msgesLength.current = 0;
+            }
 
-        setUserContent(msges[number]);
-        msgesLength.current = msges[number].length;
+        })
         
     }
 
@@ -154,22 +167,44 @@ const Side = () => {
         
     }
 
+    //채팅방 리스트 실시간 불러오기.
     React.useEffect(()=>{
-        debugger;
-        //if ( -1 === index ) return;
-        if ( -1 === indexRef.current ) return;
-        if ( '' === userRooms[indexRef.current].roomName ) return; //새로운 상대와 처음 대화시 채팅방이 없는 상태.
-        debugger;
+        const q = query(collection(db, "users"), where("email", "==", state.email));
 
-        const unsubscribe = onSnapshot(collection(db, "rooms/"+userRooms[indexRef.current].roomName+"/msges"), (snapshot) => {
-            //debugger;
+        const unsubscribe = onSnapshot(q, (snapshot) => {
 
             snapshot.docChanges().forEach((change) => {
 
+                if (change.type === "added") {
+                    
+                }
+                if (change.type === "modified") {
+                    
+                    setUserRooms(change.doc.data().roomList);
+                    
+                }
+
+            });
+
+        },(error) => {
+              
+            console.log("=========error============");
+            console.log(error);
+        });
+    })
+    
+    //클릭된 채팅방 실시간 메세지 불러오기.
+    React.useEffect(()=>{
+
+        if ( -1 === indexRef.current ) return;
+        if ( undefined === userRooms[indexRef.current] ) return;
+        if ( '' === userRooms[indexRef.current].roomName ) return; //새로운 상대와 처음 대화시 채팅방이 없는 상태.
+
+        const unsubscribe = onSnapshot(collection(db, "rooms/"+userRooms[indexRef.current].roomName+"/msges"), (snapshot) => {
+            
+            snapshot.docChanges().forEach((change) => {
+
                 const source = change.doc.metadata.hasPendingWrites ? "Local" : "Server";
-                console.log(source);
-                
-                //debugger;
 
                 const msgNumber = Number(change.doc.id.replace('msg',''));
 
@@ -177,7 +212,7 @@ const Side = () => {
 
                 if (change.type === "added") {
                     
-                    console.log(change.doc.data().chat);
+                    //console.log(change.doc.data().chat);
                     
                     const msgJson = {
                         chat: change.doc.data().chat,
@@ -211,6 +246,7 @@ const Side = () => {
         
     })
 
+    //채팅 리스트 불러오기
     React.useEffect(()=> {
 
         const q = query(collection(db, "users"), where("email", "==", state.email));
@@ -247,16 +283,17 @@ const Side = () => {
 
     },[])
 
+    //메세지 리스트 불러오기.
     React.useEffect(()=> {
-        debugger;
+    
         if ( 0 === userRooms.length ) return;
         if ( userRooms.length-1 < forRoof.current ) return;
         if ( '' === userRooms[forRoof.current].roomName ) return; //채팅방이 안만들어진 상태.
-
+        
         const q = query(collection(db, "rooms/"+userRooms[forRoof.current].roomName+"/msges"), orderBy("order"));
-        //debugger;
+        
         async function msgList(){
-            //debugger;
+            
             const query = await getDocs(q);
             
             if ( 0 < query.size ){
@@ -268,16 +305,28 @@ const Side = () => {
                     
                 });
 
+                if ( undefined === userRooms[forRoof.current] ) return;
+
                 if ( 0 === msges.length ){
-                    setMsges([list]);
+                    setMsges([
+                        {
+                            roomName: userRooms[forRoof.current].roomName,
+                            msgList: list
+                        }
+                    ])
+
                 } else {
+                    const listJson = {
+                        roomName: userRooms[forRoof.current].roomName,
+                        msgList: list
+                    }
                     setMsges((prevState)=>{
-                        return [...prevState, list]
+                        return [...prevState, listJson]
                     })
                 }
 
                 forRoof.current = forRoof.current + 1;
-                //debugger;
+            
             }
 
         }
@@ -305,6 +354,5 @@ const Side = () => {
         </>
     )
 }
-
 
 export default Side;

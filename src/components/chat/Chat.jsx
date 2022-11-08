@@ -2,11 +2,10 @@ import React from "react";
 import styles from "./Chat.module.css";
 
 import { db } from "../../firebase";
-import { doc, getDocs, collection, setDoc, addDoc, onSnapshot, query, where, orderBy, updateDoc, arrayUnion } from "firebase/firestore";
-
+import { doc, getDocs, collection, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
 
 const Chat = ({state}) => {
-
+    
     const onKeyDown = async (e) => {
 
         if ( "Enter" === e.key && "" !== e.target.value ){
@@ -21,10 +20,9 @@ const Chat = ({state}) => {
             const day = date.getDate();
 
             const msgSize = (undefined === state.content ? 0 : state.content.length);
-
+            
             let roomName = state.rooms[state.index].roomName;
-            debugger;
-            //return;
+            
             //상대방과 최초 대화시 방 만들어주기.
             if ( 0 === msgSize ){
                 
@@ -80,8 +78,6 @@ const Chat = ({state}) => {
                 email: state.email,
                 order: msgSize+1
             });
-
-            debugger;
 
             //텍스트창 초기화
             e.target.value = "";
@@ -188,6 +184,5 @@ const ChatListUi = ({obj, email, contents}) => {
         
     )
 }
-
 
 export default Chat;

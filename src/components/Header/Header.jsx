@@ -2,13 +2,10 @@ import React from "react";
 import styles from "./Header.module.css";
 
 import { db } from "../../firebase";
-import { doc, getDocs, collection, setDoc, addDoc, onSnapshot, query, where, orderBy, updateDoc, arrayUnion } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 import { useNavigate, useLocation } from "react-router-dom";
-//import Side from "../Side/Side";
 
 const Header = () => {
-
-    //debugger;
 
     const userRef = React.useRef([]);
 
@@ -19,24 +16,21 @@ const Header = () => {
 
     const navigate = useNavigate();
     const { state } = useLocation();
-    
 
     React.useEffect(()=>{
-        //debugger;
+        
         const unsubscribe = onSnapshot(collection(db, "users"), (snapshot) => {
             const list = [];
             snapshot.docChanges().forEach((change) => {
 
                 if (change.type === "added") {
 
-                    //console.log(change.doc.data().email);
                     list.push(change.doc.data());
-                    //debugger;
+                    
                 }
 
             })
             
-            //debugger;
             if ( 0 === userRef.current.length ){
                 userRef.current = list;
             } else {
@@ -48,8 +42,7 @@ const Header = () => {
     },[])
     
     const onChangeSearch = (e) => {
-        console.log(e.target.value);
-
+    
         onClickSearch();
 
         if ( '' === e.target.value && 0 === user.length ) return;
@@ -65,7 +58,8 @@ const Header = () => {
         })
 
         if ( undefined === userObj ) return;
-
+        if ( state.email === userObj.email ) return;
+        
         if ( 0 === user.length ){
             setUser([userObj]);
         } else {
@@ -83,8 +77,6 @@ const Header = () => {
             
         }
 
-        //console.log("user: ", user.email);
-        //console.log("user: ", user.name);
     }
 
     const onClick = (e) => {
@@ -100,7 +92,6 @@ const Header = () => {
         } else if ( '' !== e.target.style.backgroundColor ){
             e.target.style.backgroundColor = '';
         }
-        //console.log(state);
 
         let refJson = {
             emailY: "", 
@@ -117,12 +108,8 @@ const Header = () => {
         const stateJson = {
             email: state.email,
             displayName: state.displayName,
-            //date: "2022-10-28",
             emailY: refJson.emailY,
-            //img: "./img/img_profile.png",
             nameY: refJson.name,
-            //roomName: "",
-            //titleContents: "",
         }
 
         navigate('/side', {state: stateJson});
@@ -146,6 +133,7 @@ const Header = () => {
         if( 'div_search_auto' === e.target.id  ) return;
         if( 'div_search_auto' === e.target.parentElement.id ) return;
         if( 'div_search_auto' === e.target.parentElement.parentElement.id ) return;
+        if ( null === divAutoRef.current ) return; 
 
         if( 'visible' === divAutoRef.current.style.visibility ){
             divAutoRef.current.style.marginTop = "45px";
@@ -153,7 +141,6 @@ const Header = () => {
             divAutoRef.current.style.visibility = 'hidden';
         }
     });
-
 
     return (
         <header className={styles.header}>
