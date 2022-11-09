@@ -6,6 +6,17 @@
     margin: 20px;
 }
 
+@media (max-width: 767px){
+	#root{
+        display: grid;
+        grid-template-columns: 50px 1fr;
+        justify-content: start;
+        gap: 20px;
+        margin: 10px;
+        /* width: 100%; */
+    }
+}
+
 body{
     background-color: rgb(18 16 22);
     -webkit-user-select: none;

@@ -71,3 +71,31 @@ li{
 .ip_search:hover{
     cursor: text;
 }
+
+@media (max-width: 767px){
+
+    .ipt_search{
+        width: 163px;
+        background-color: rgb(26 29 33);
+        padding: 10px;
+        /* padding-right: 50px; */
+        border-radius: 10px;
+        border: 1px solid rgb(204, 204, 204);
+        color: rgb(204, 204, 204);
+    }
+
+    .div_search_auto{
+        width: 182px;
+        height: 0px;
+        border: 1px solid rgb(204, 204, 204);
+        position: absolute;
+        margin-top: 45px;
+        border-radius: 10px;
+        background-color: rgb(18 16 22);
+        overflow-y: overlay;
+        overflow-x: hidden;
+        transition: all 0.6s;
+        visibility: hidden;
+    }
+
+}

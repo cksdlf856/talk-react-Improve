@@ -40,7 +40,23 @@
     background-color: rgb(209 210 211);
 }
 
+.div_b_date{
+    text-align: center;
+    padding: 50px;
+}
 
+.b_date{
+    background-color: rgb(53 55 59);
+    color: rgb(170 171 173);
+    border-radius: 6px;
+    padding: 10px;
+    padding-left: 80px;
+    padding-right: 80px;
+    font-size: 13px;
+    opacity: 0.5;
+    cursor: pointer;
+    transition: all 1;
+}
 
 .input_css{
     width: 95.5%;
@@ -100,4 +116,118 @@
     margin-left: 20px;
     margin-top: 42px;
     color: rgb(170 171 173);
+}
+
+@media (max-width: 767px){
+
+    .main_border_css{
+        border: 1px black solid;
+        grid-column: 1/3;
+        grid-row: 2/3;
+        background-color: rgb(26 29 33);
+        border-radius: 8px;
+    }
+
+    .main_css{
+        padding: 10px;
+        height: 440px;
+        overflow-y: auto;
+    }
+
+    .main_css::-webkit-scrollbar{
+        width: 5px;
+        background-color: rgb(26 29 33);
+    }
+
+    .footer_css{
+        /* margin-left: 15px;
+        margin-right: 45px;
+        margin-bottom: 20px; */
+        margin-left: 2px;
+        margin-right: 33px;
+        margin-bottom: 2px;
+    }
+
+    .input_css{
+        width: 100%;
+        height: 20px;
+        padding: 15px;
+        font-size: 14px;
+        overflow: hidden;
+        background-color: rgb(26 29 33);
+        border: 1px rgb(209 210 211) solid;
+        border-radius: 7px;
+        color: rgb(209 210 211);
+    }
+
+    .div_b_date{
+        text-align: center;
+        padding: 30px;
+    }
+
+    .b_date{
+        background-color: rgb(53 55 59);
+        color: rgb(170 171 173);
+        border-radius: 6px;
+        padding: 7px;
+        padding-left: 50px;
+        padding-right: 50px;
+        font-size: 12px;
+        opacity: 0.5;
+        cursor: pointer;
+        transition: all 1;
+    }
+
+    .div_css_op{
+        display: flex;
+        padding-left: 0px;
+    }
+
+    .img_profile{
+        width: 50px;
+        height: 50px;
+        margin-top: 4px;
+        filter: invert(1);
+    }
+
+    .p_contents_css_op{
+        margin-left: 10px;
+        border: 1px rgb(209 210 211) solid;
+        border-radius: 7px;
+        /* padding: 12px; */
+        color: rgb(209 210 211);
+        font-size: 12px;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-top: 8px;
+        height: 11px;
+    }
+
+    .p_date_css_op{
+        font-size: 12px;
+        margin-left: 10px;
+        margin-top: 30px;
+        color: rgb(170 171 173);
+    }
+
+    .p_date_css{
+        margin-right: 10px;
+        margin-top: 30px;
+        color: rgb(170 171 173);
+        font-size: 12px;
+    }
+    
+    .p_contents_css{
+        margin-right: 0px;
+        border: 1px rgb(209 210 211) solid;
+        border-radius: 7px;
+        /* padding: 12px; */
+        color: rgb(209 210 211);
+        font-size: 12px;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-top: 8px;
+        height: 11px;
+    }
+
 }

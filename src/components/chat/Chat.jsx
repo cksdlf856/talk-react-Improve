@@ -137,22 +137,8 @@ const ChatListUi = ({obj, email, contents}) => {
 
         <>
             { obj.date !== (contents[obj.order-2] === undefined ? "" : contents[obj.order-2].date ) ? 
-            <div style={{
-                "textAlign": "center",
-                "padding": "50px"
-            }}>
-                <b style={{
-                    "backgroundColor":"rgb(53 55 59)",
-                    "color":"rgb(170 171 173)",
-                    "borderRadius":"6px",
-                    "padding":"10px",
-                    "paddingLeft":"80px",
-                    "paddingRight":"80px",
-                    "fontSize": "13px",
-                    "opacity": "0.5",
-                    "cursor": "pointer",
-                    "transition": "all 1"
-                }} onMouseOver={(e)=>{ e.target.style.opacity = "1"; }} onMouseOut={(e)=>{ e.target.style.opacity = "0.5"; }} >
+            <div className={styles.div_b_date}>
+                <b className={styles.b_date} onMouseOver={(e)=>{ e.target.style.opacity = "1"; }} onMouseOut={(e)=>{ e.target.style.opacity = "0.5"; }} >
                     { obj.date }
                 </b>
             </div>

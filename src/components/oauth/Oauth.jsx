@@ -44,13 +44,13 @@ const Oauth = () => {
                 <h2 className={styles.h1_contents}>토크 에서 <br/> 이야기를 펼쳐보세요</h2>
                 <button className={styles.btn_google_auth} onClick={oauthConnect}>Google 로그인</button>
             </div>
-            <div>
-                <img src="img/flowerImg.svg" style={{"width":"30%", "filter": "invert(1)", "padding": "30px"}} alt=""/>
-                <img src="img/flowerImg.svg" style={{"width":"30%", "filter": "invert(1)"}} alt=""/>
+            <div className={styles.div_sub_2}>
+                <img src="img/flowerImg.svg" alt=""/>
+                {/* <img src="img/flowerImg.svg" style={{"width":"30%", "filter": "invert(1)"}} alt=""/>
                 <img src="img/flowerImg.svg" style={{"width":"30%", "filter": "invert(1)", "padding": "10px"}} alt=""/>
                 <img src="img/flowerImg.svg" style={{"width":"30%", "filter": "invert(1)", "padding": "5px"}} alt=""/>
                 <img src="img/flowerImg.svg" style={{"width":"30%", "filter": "invert(1)", "padding": "30px"}} alt=""/>
-                <img src="img/flowerImg.svg" style={{"width":"30%", "filter": "invert(1)", "padding": "5px"}} alt=""/>
+                <img src="img/flowerImg.svg" style={{"width":"30%", "filter": "invert(1)", "padding": "5px"}} alt=""/> */}
             </div>
         </div>
     )

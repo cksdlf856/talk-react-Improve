@@ -60,3 +60,18 @@ aside::-webkit-scrollbar-thumb{
     font-weight: revert;
     font-size: 13px;
 }
+
+@media (max-width: 767px){
+
+    aside{
+        grid-column: 1/2;
+        grid-row: 2/3;
+        background-color: rgb(25 23 29);
+        border-radius: 10px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        height: 575px;
+        display: none;
+    }
+
+}
