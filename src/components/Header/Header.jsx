@@ -151,7 +151,7 @@ const Header = () => {
                     <i className="fa-solid fa-bars" ></i>
                 </div>
                 <div className={styles.header_div_right}>
-                    <input id="ipt_search" className={styles.ipt_search} placeholder="user search" onChange={onChangeSearch} onClick={onClickSearch} ></input>
+                    <input id="ipt_search" className={styles.ipt_search} placeholder="user email search" onChange={onChangeSearch} onClick={onClickSearch} ></input>
                     <div id="div_search_auto" className={styles.div_search_auto} ref={divAutoRef}>
                         <ul>
                             {
