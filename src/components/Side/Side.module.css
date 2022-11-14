@@ -1,4 +1,4 @@
-aside{
+.aside_list{
     grid-column: 1/2;
     grid-row: 2/3;
     background-color: rgb(25 23 29);
@@ -63,15 +63,22 @@ aside::-webkit-scrollbar-thumb{
 
 @media (max-width: 767px){
 
-    aside{
-        grid-column: 1/2;
-        grid-row: 2/3;
+    .aside_list{
+        /* grid-column: 1/2;
+        grid-row: 2/3; */
         background-color: rgb(25 23 29);
-        border-radius: 10px;
+        border-radius: 0px;
         overflow-y: auto;
         overflow-x: hidden;
-        height: 575px;
-        display: none;
+        height: 100%;
+        width: 70%;
+        position: absolute;
+        opacity: 0.9;
+        transition: margin 0.5s;
+        z-index: 10;
+        margin-top: -10px;
+        /* margin-left: -18px; */
+        margin-left: -280px;
     }
 
 }

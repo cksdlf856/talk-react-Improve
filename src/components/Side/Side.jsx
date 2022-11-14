@@ -21,6 +21,9 @@ const Side = () => {
     const [msges, setMsges] = React.useState([]);
     const msgesLength = React.useRef(0);
     
+    const asideRef = React.useRef();
+    const asideOnOffRef = React.useRef('');
+
     const props = {
         email : state.email,
         displayName : state.displayName,
@@ -32,6 +35,26 @@ const Side = () => {
 
     //유저 검색 후 클릭 useEffect
     React.useEffect(()=>{
+
+        debugger;
+
+        if ( undefined === state.sideOnOff ) return;
+        
+        asideOnOffRef.current = state.sideOnOff;
+        if( asideOnOffRef.current ){
+            asideRef.current.style.marginLeft = '-18px';
+            asideOnOffRef.current = '';
+        } else if ( !asideOnOffRef.current ) {
+            asideRef.current.style.marginLeft = '-280px';
+            asideOnOffRef.current = '';
+        }
+
+        // if( '' === asideRef.current.style.marginLeft || '-280px' === asideRef.current.style.marginLeft ){
+        //     asideRef.current.style.marginLeft = '-18px';
+        // } else {
+        //     asideRef.current.style.marginLeft = '-280px';
+        // }
+
         
         if ( undefined === state.emailY ) return;
 
@@ -336,7 +359,7 @@ const Side = () => {
     
     return(
         <>  
-            <aside>
+            <aside className={styles.aside_list} ref={asideRef} >
                 {
                     userRooms.map((obj, index)=>{
                         return (

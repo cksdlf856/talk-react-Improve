@@ -5,7 +5,7 @@ import { db } from "../../firebase";
 import { doc, getDocs, collection, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
 
 const Chat = ({state}) => {
-    
+    //debugger;
     const onKeyDown = async (e) => {
 
         if ( "Enter" === e.key && "" !== e.target.value ){
@@ -106,7 +106,7 @@ const Chat = ({state}) => {
         
         <main className={styles.main_border_css} >
             <header className={styles.header_css}>
-                <h2 className={styles.header_title_css}> {state.name} </h2>
+                <h2 className={styles.header_title_css}> { undefined !== state.rooms[state.index] ? state.rooms[state.index].name : null } </h2>
             </header>
             <main id="main_div_chat" className={styles.main_css} ref={mainRef}>                
                 {

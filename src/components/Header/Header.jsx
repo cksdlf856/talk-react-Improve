@@ -8,6 +8,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 const Header = () => {
 
     const userRef = React.useRef([]);
+    const refJsonRef = React.useRef();
 
     const [user, setUser] = React.useState([]);
 
@@ -95,7 +96,7 @@ const Header = () => {
             e.target.style.backgroundColor = '';
         }
 
-        let refJson = {
+        const refJson = {
             emailY: "", 
             name: ""
         }
@@ -106,6 +107,8 @@ const Header = () => {
                 refJson.name = ref.name;
             }
         })
+
+        refJsonRef.current = refJson
 
         const stateJson = {
             email: state.email,
@@ -142,13 +145,104 @@ const Header = () => {
             divAutoRef.current.style.height = '0px';
             divAutoRef.current.style.visibility = 'hidden';
         }
+
+        //mobile
+        if(matchMedia("screen and (max-width: 767px)").matches){
+
+            if( null === state ) return;
+
+            //asideOnOff();
+            const stateJson = {
+                email: state.email,
+                displayName: state.displayName,
+                emailY: "",
+                nameY: "",
+                sideOnOff: false
+            }
+    
+            if ( undefined === refJsonRef.current ){
+                
+                stateJson.emailY = undefined;
+                stateJson.nameY = undefined;
+                
+            } else {
+                
+                stateJson.emailY = refJsonRef.current.emailY;
+                stateJson.nameY = refJsonRef.current.name;
+    
+            }
+    
+            navigate('/side', {state: stateJson});
+
+        //pc
+        } else {
+
+        }
+
     });
+
+    const onClickI = () =>{
+        if(!(matchMedia("screen and (max-width: 767px)").matches)) return;
+
+        if( null === state ) return;
+
+        //asideOnOff();
+
+        const stateJson = {
+            email: state.email,
+            displayName: state.displayName,
+            emailY: "",
+            nameY: "",
+            sideOnOff: true
+        }
+
+        if ( undefined === refJsonRef.current ){
+            
+            stateJson.emailY = undefined;
+            stateJson.nameY = undefined;
+            
+        } else {
+            
+            stateJson.emailY = refJsonRef.current.emailY;
+            stateJson.nameY = refJsonRef.current.name;
+
+        }
+
+        navigate('/side', {state: stateJson});
+    }
+
+    const asideOnOff = () =>{
+        debugger;
+        if( null === state ) return;
+
+        const stateJson = {
+            email: state.email,
+            displayName: state.displayName,
+            emailY: "",
+            nameY: "",
+            sideOnOff: true
+        }
+
+        if ( undefined === refJsonRef.current ){
+            
+            stateJson.emailY = undefined;
+            stateJson.nameY = undefined;
+            
+        } else {
+            
+            stateJson.emailY = refJsonRef.current.emailY;
+            stateJson.nameY = refJsonRef.current.name;
+
+        }
+
+        navigate('/side', {state: stateJson});
+    }
 
     return (
         <header className={styles.header}>
             <nav className={styles.header_nav}>
                 <div>
-                    <i className="fa-solid fa-bars" ></i>
+                    <i className="fa-solid fa-bars" onClick={onClickI} ></i>
                 </div>
                 <div className={styles.header_div_right}>
                     <input id="ipt_search" className={styles.ipt_search} placeholder="user email search" onChange={onChangeSearch} onClick={onClickSearch} ></input>
