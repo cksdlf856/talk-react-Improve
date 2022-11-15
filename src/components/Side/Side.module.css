@@ -73,7 +73,7 @@ aside::-webkit-scrollbar-thumb{
         height: 100%;
         width: 70%;
         position: absolute;
-        opacity: 0.9;
+        /* opacity: 0.9; */
         transition: margin 0.5s;
         z-index: 10;
         margin-top: -10px;

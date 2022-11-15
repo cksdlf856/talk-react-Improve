@@ -22,7 +22,7 @@ const Oauth = () => {
             //user.providerData[0].displayName
             //user.providerData[0].email
 
-            navigate('/side', {state: user.providerData[0]});
+            navigate('/main', {state: user.providerData[0]});
             
             
         }).catch((error) => {
