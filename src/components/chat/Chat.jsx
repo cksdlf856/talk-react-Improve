@@ -1,10 +1,10 @@
 import React from "react";
 import styles from "./Chat.module.css";
 
-import { db } from "../../firebase";
-import { doc, getDocs, collection, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
+// import { db } from "../../firebase";
+// import { doc, getDocs, collection, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
 
-const Chat = ({userMsgObj, chatOnKeyDown, chatMainRef}) => {
+const Chat = ({ userMsgObj, chatOnKeyDown, chatMainRef }) => {
     //debugger;
     // const onKeyDown = async (e) => {
 

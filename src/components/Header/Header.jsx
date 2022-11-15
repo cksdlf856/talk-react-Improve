@@ -1,19 +1,19 @@
 import React from "react";
 import styles from "./Header.module.css";
 
-import { db } from "../../firebase";
-import { collection, onSnapshot } from "firebase/firestore";
-import { useNavigate, useLocation } from "react-router-dom";
+// import { db } from "../../firebase";
+// import { collection, onSnapshot } from "firebase/firestore";
+// import { useNavigate, useLocation } from "react-router-dom";
 
-const Header = ({headerMenubarOnClick, headerRef}) => {
-
+const Header = ({ headerMenubarOnClick, headerRef, headerUserSearchInput, divAutoRef, userSearchList }) => {
+    //debugger;
     // const userRef = React.useRef([]);
     // const refJsonRef = React.useRef();
 
     // const [user, setUser] = React.useState([]);
 
     const liRef = React.useRef([]);
-    const divAutoRef = React.useRef();
+    //const divAutoRef = React.useRef();
 
     // const navigate = useNavigate();
     // const { state } = useLocation();
@@ -182,14 +182,32 @@ const Header = ({headerMenubarOnClick, headerRef}) => {
     // });
 
     const onClickI = () =>{
-
         headerMenubarOnClick();
-
     }
 
-    const onChangeSearch = (e) => {}
+    const onChangeSearch = (e) => {
+
+        onClickSearch();
+
+        //if ( '' === e.target.value) return;
+
+        // if ( '' === e.target.value && 0 < userSearchList.length ){
+        //     setUserSearchList()
+        // }
+
+        headerUserSearchInput(e.target.value);
+    }
+
     const onClick = () =>{}
-    const onClickSearch = () => {}
+    const onClickSearch = () => {
+
+        if ( 'visible' === divAutoRef.current.style.visibility ) return;
+
+        divAutoRef.current.style.marginTop = "172px";
+        divAutoRef.current.style.height = '120px';
+        divAutoRef.current.style.visibility = 'visible';
+
+    }
 
     // const onClickI = () =>{
         
@@ -260,17 +278,16 @@ const Header = ({headerMenubarOnClick, headerRef}) => {
                     <div id="div_search_auto" className={styles.div_search_auto} ref={divAutoRef}>
                         <ul>
                             {
-                                // user.map((data, index)=>{
-                                //     return(
-                                //         <li key={index} onClick={onClick} ref={(ref)=>{liRef.current[index]=ref}} >
-                                //             {data.email}
-                                //         </li>
-                                //     )
-                                // })
+                                userSearchList.map((data, index)=>{
+                                    return(
+                                        <li key={index} onClick={onClick} ref={(ref)=>{liRef.current[index]=ref}} >
+                                            {data}
+                                        </li>
+                                    )
+                                })
                             }
                         </ul>
                     </div>
-                    {/* <i className="fa-solid fa-magnifying-glass"></i> */}
                     <i className="fa-solid fa-bell" style={{"marginLeft":"20px"}}></i>
                 </div>
 

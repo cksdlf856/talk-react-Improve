@@ -1,13 +1,13 @@
 import React from "react";
 import styles from "./Side.module.css";
-import { useLocation } from "react-router-dom";
+// import { useLocation } from "react-router-dom";
 
-import { db } from "../../firebase";
-import { doc, getDocs, collection, setDoc, onSnapshot, query, where, orderBy } from "firebase/firestore";
+// import { db } from "../../firebase";
+// import { doc, getDocs, collection, setDoc, onSnapshot, query, where, orderBy } from "firebase/firestore";
 
-import Chat from "../Chat/Chat";
+// import Chat from "../Chat/Chat";
 
-const Side = ({userRooms, sideListOnClick, asideRef}) => {
+const Side = ({ userRooms, sideListOnClick, asideRef }) => {
     
     // const { state } = useLocation();
     

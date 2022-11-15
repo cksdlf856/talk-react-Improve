@@ -15,12 +15,14 @@ const Main = () => {
     const [ userRooms, setUserRooms ] = React.useState([]);
     const [ userMsgObj, setUserMsgObj ] = React.useState({});
     const [ userMsges, setUserMsges ] = React.useState([]);
+    const [ userSearchList, setUserSearchList ] = React.useState([]);
 
     const mainRef = React.useRef();
     const chatMainRef = React.useRef();
     const headerRef = React.useRef();
     const asideRef = React.useRef();
     const userRef = React.useRef([]);
+    const divAutoRef = React.useRef();
     
     
     React.useEffect(()=>{
@@ -134,6 +136,34 @@ const Main = () => {
         console.log("올리기");
     }
 
+    const headerUserSearchInput = (txt) =>{
+
+        if ( '' === txt && 0 === userSearchList.length ) return;
+
+        if ( '' === txt && 0 < userSearchList.length ){
+            setUserSearchList([]);
+            return
+        }
+
+        const userObj = userRef.current.find((data)=>{
+            return data.email.split("@")[0].includes(txt)
+        })
+
+        if ( undefined === userObj ) return;
+
+        if ( 0 === userSearchList.length ){
+            setUserSearchList([userObj.email]);
+        } else {
+            if( !userSearchList.includes(userObj.email) ){
+                setUserSearchList((prev)=>{
+                    return [userObj.email, ...prev]
+                })
+            }
+        }
+
+        console.log(userObj.email);
+    }
+
     const sideListOnClick = (index) =>{
         
         const msgObj = {
@@ -156,10 +186,19 @@ const Main = () => {
 
     const mainOnClick = (e) => {
 
+        if ( 'ipt_search' === e.target.id || 'div_search_auto' === e.target.id ) return;
+
+        if( 'visible' === divAutoRef.current.style.visibility ){
+            divAutoRef.current.style.marginTop = "45px";
+            divAutoRef.current.style.height = '0px';
+            divAutoRef.current.style.visibility = 'hidden';
+        }
+
         if(!(matchMedia("screen and (max-width: 767px)").matches)) return;
         if ( '-280px' === asideRef.current.style.marginLeft || '' === asideRef.current.style.marginLeft ) return;
         if ( 'aside_list' === e.target.id ) return;
         if ( 'i_menubar' === e.target.id ) return;
+
         if ( '-18px' === asideRef.current.style.marginLeft ){
             asideRef.current.style.marginLeft = '-280px';
             chatMainRef.current.style.opacity = '1';
@@ -171,9 +210,17 @@ const Main = () => {
 
     return(
         <div id="div_main" className={styles.div_main} ref={mainRef} onClick={mainOnClick} >
-            <Header headerMenubarOnClick={headerMenubarOnClick} headerRef={headerRef} />
-            <Side userRooms={userRooms} sideListOnClick={sideListOnClick} asideRef={asideRef} />
-            <Chat userMsgObj={userMsgObj} chatOnKeyDown={chatOnKeyDown} chatMainRef={chatMainRef} />
+            <Header headerMenubarOnClick={headerMenubarOnClick} 
+                    headerUserSearchInput={headerUserSearchInput}
+                    userSearchList={userSearchList} 
+                    headerRef={headerRef} 
+                    divAutoRef={divAutoRef}/>
+            <Side userRooms={userRooms} 
+                  sideListOnClick={sideListOnClick} 
+                  asideRef={asideRef} />
+            <Chat userMsgObj={userMsgObj} 
+                  chatOnKeyDown={chatOnKeyDown} 
+                  chatMainRef={chatMainRef} />
         </div>
     )
 
