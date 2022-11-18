@@ -23,6 +23,7 @@ const Main = () => {
     const asideRef = React.useRef();
     const userRef = React.useRef([]);
     const divAutoRef = React.useRef();
+    const liRef = React.useRef([]);
     
     
     React.useEffect(()=>{
@@ -185,8 +186,20 @@ const Main = () => {
     }
 
     const mainOnClick = (e) => {
+        
+        console.log(e.target.localName);
 
-        if ( 'ipt_search' === e.target.id || 'div_search_auto' === e.target.id ) return;
+        if ( 'ipt_search' === e.target.id ) {
+            if ( matchMedia("screen and (max-width: 767px)").matches && '-18px' === asideRef.current.style.marginLeft ){
+                mobileSideOnOff();
+                return;
+            } else {
+                return;
+            }
+        }
+
+        if ( 'div_search_auto' === e.target.id ) return;
+        if ( 'li' === e.target.localName ) return;
 
         if( 'visible' === divAutoRef.current.style.visibility ){
             divAutoRef.current.style.marginTop = "45px";
@@ -200,13 +213,25 @@ const Main = () => {
         if ( 'i_menubar' === e.target.id ) return;
 
         if ( '-18px' === asideRef.current.style.marginLeft ){
-            asideRef.current.style.marginLeft = '-280px';
-            chatMainRef.current.style.opacity = '1';
-            headerRef.current.style.opacity = '1';
+            mobileSideOnOff();
         }
         console.log("내리기");
     }
-    
+
+    const mobileSideOnOff = () =>{
+        asideRef.current.style.marginLeft = '-280px';
+        chatMainRef.current.style.opacity = '1';
+        headerRef.current.style.opacity = '1';
+    }
+
+    const chatMainHide = (division) =>{
+        if ( division ) {
+            chatMainRef.current.style.display = "none";
+        } else {
+            chatMainRef.current.style.display = "block";
+        }
+        
+    }
 
     return(
         <div id="div_main" className={styles.div_main} ref={mainRef} onClick={mainOnClick} >
@@ -214,7 +239,10 @@ const Main = () => {
                     headerUserSearchInput={headerUserSearchInput}
                     userSearchList={userSearchList} 
                     headerRef={headerRef} 
-                    divAutoRef={divAutoRef}/>
+                    divAutoRef={divAutoRef}
+                    liRef={liRef}
+                    chatMainHide={chatMainHide}
+                    />
             <Side userRooms={userRooms} 
                   sideListOnClick={sideListOnClick} 
                   asideRef={asideRef} />

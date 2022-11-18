@@ -15,6 +15,10 @@
         margin: 10px; */
         
     }
+
+    body{
+        /* overflow: hidden; */
+    }
 }
 
 body{

@@ -5,18 +5,24 @@ import styles from "./Header.module.css";
 // import { collection, onSnapshot } from "firebase/firestore";
 // import { useNavigate, useLocation } from "react-router-dom";
 
-const Header = ({ headerMenubarOnClick, headerRef, headerUserSearchInput, divAutoRef, userSearchList }) => {
+const Header = ({ headerMenubarOnClick, headerRef, headerUserSearchInput, divAutoRef, userSearchList, liRef, chatMainHide }) => {
     //debugger;
     // const userRef = React.useRef([]);
     // const refJsonRef = React.useRef();
 
     // const [user, setUser] = React.useState([]);
 
-    const liRef = React.useRef([]);
+    //const liRef = React.useRef([]);
     //const divAutoRef = React.useRef();
 
     // const navigate = useNavigate();
     // const { state } = useLocation();
+
+    const iMenubarRef = React.useRef();
+    const pCancelRef = React.useRef();
+    const iptSearchRef = React.useRef();
+    const divMenubarRef = React.useRef();
+    const divRightRef = React.useRef();
 
     // React.useEffect(()=>{
         
@@ -186,26 +192,82 @@ const Header = ({ headerMenubarOnClick, headerRef, headerUserSearchInput, divAut
     }
 
     const onChangeSearch = (e) => {
-
         onClickSearch();
-
-        //if ( '' === e.target.value) return;
-
-        // if ( '' === e.target.value && 0 < userSearchList.length ){
-        //     setUserSearchList()
-        // }
-
         headerUserSearchInput(e.target.value);
     }
 
-    const onClick = () =>{}
-    const onClickSearch = () => {
+    const liOnClick = (e) =>{
 
+        //if(matchMedia("screen and (max-width: 767px)").matches) return;
+
+        if ( '' === e.target.style.backgroundColor ){
+        
+            liRef.current.forEach((ref)=>{
+                if (null !== ref)
+                ref.style.backgroundColor = '';
+            })
+            e.target.style.backgroundColor = 'rgb(33, 31, 38)';
+
+        } else if ( '' !== e.target.style.backgroundColor ){
+            e.target.style.backgroundColor = '';
+        }
+
+    }
+
+    const onClickSearch = () => {
         if ( 'visible' === divAutoRef.current.style.visibility ) return;
 
-        divAutoRef.current.style.marginTop = "172px";
-        divAutoRef.current.style.height = '120px';
-        divAutoRef.current.style.visibility = 'visible';
+        //pc
+        if(!(matchMedia("screen and (max-width: 767px)").matches)) {
+
+            divAutoRef.current.style.marginTop = "172px";
+            divAutoRef.current.style.height = '120px';
+            divAutoRef.current.style.visibility = 'visible';
+
+        //mobile  
+        } else { 
+
+            chatMainHide(true);
+
+            divMenubarRef.current.style.display = "none";
+            pCancelRef.current.style.display = "block";
+            iMenubarRef.current.style.display = "none";
+            iptSearchRef.current.style.width = "270px";
+            divRightRef.current.style.gridTemplateRows = "60px 1fr";
+            divRightRef.current.style.height = "500px";
+
+            divAutoRef.current.style.height = "100%"; //520
+            // divAutoRef.current.style.marginTop = "610px";
+            // divAutoRef.current.style.marginLeft = "-5px";
+            
+            divAutoRef.current.style.width = "100%";
+            divAutoRef.current.style.display = "block";
+            //divAutoRef.current.style.gridRow = "2/3";
+            //divAutoRef.current.style.position = "inherit";
+        }
+
+        
+    }
+
+    const cancelOnClick = () =>{
+
+        chatMainHide(false);
+
+        divMenubarRef.current.style.display = "block";
+        pCancelRef.current.style.display = "none";
+        iMenubarRef.current.style.display = "inline";
+        iptSearchRef.current.style.width = "163px";
+        divRightRef.current.style.gridTemplateRows = "none";
+        divRightRef.current.style.height = "auto";
+
+        
+        divAutoRef.current.style.height = "0px";
+        // divAutoRef.current.style.marginLeft = "-5px";
+        
+        // divAutoRef.current.style.marginTop = "600px";
+        
+        divAutoRef.current.style.width = "0px";
+        divAutoRef.current.style.display = "none";
 
     }
 
@@ -270,17 +332,21 @@ const Header = ({ headerMenubarOnClick, headerRef, headerUserSearchInput, divAut
     return (
         <header className={styles.header} ref={headerRef}>
             <nav className={styles.header_nav}>
-                <div>
-                    <i id="i_menubar" className="fa-solid fa-bars" onClick={onClickI} ></i>
+                <div ref={divMenubarRef} className={styles.div_menubar}>
+                    <i id="i_menubar" ref={iMenubarRef} className="fa-solid fa-bars" onClick={onClickI} ></i>
                 </div>
-                <div className={styles.header_div_right}>
-                    <input id="ipt_search" className={styles.ipt_search} placeholder="user email search" onChange={onChangeSearch} onClick={onClickSearch} ></input>
+                <div className={styles.header_div_right} ref={divRightRef}>
+                    <input id="ipt_search" ref={iptSearchRef} className={styles.ipt_search} placeholder="user email search" onChange={onChangeSearch} onClick={onClickSearch} ></input>
+
+
+
+
                     <div id="div_search_auto" className={styles.div_search_auto} ref={divAutoRef}>
                         <ul>
                             {
                                 userSearchList.map((data, index)=>{
                                     return(
-                                        <li key={index} onClick={onClick} ref={(ref)=>{liRef.current[index]=ref}} >
+                                        <li key={index} onClick={liOnClick} ref={(ref)=>{liRef.current[index]=ref}} >
                                             {data}
                                         </li>
                                     )
@@ -288,7 +354,10 @@ const Header = ({ headerMenubarOnClick, headerRef, headerUserSearchInput, divAut
                             }
                         </ul>
                     </div>
-                    <i className="fa-solid fa-bell" style={{"marginLeft":"20px"}}></i>
+
+
+                    {/* <i ref={iMenubarRef} className="fa-solid fa-bell" style={{"marginLeft":"20px"}}></i> */}
+                    <p ref={pCancelRef} className={styles.p_cancel} onClick={cancelOnClick} >취소</p>
                 </div>
 
             </nav>
