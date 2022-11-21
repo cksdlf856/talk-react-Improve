@@ -5,7 +5,14 @@ import styles from "./Header.module.css";
 // import { collection, onSnapshot } from "firebase/firestore";
 // import { useNavigate, useLocation } from "react-router-dom";
 
-const Header = ({ headerMenubarOnClick, headerRef, headerUserSearchInput, divAutoRef, userSearchList, liRef, chatMainHide }) => {
+const Header = ({ headerMenubarOnClick, 
+                  headerRef, 
+                  headerUserSearchInput, 
+                  divAutoRef, 
+                  userSearchList, 
+                  liRef, 
+                  chatMainHide, 
+                  newUserAdd }) => {
     //debugger;
     // const userRef = React.useRef([]);
     // const refJsonRef = React.useRef();
@@ -211,6 +218,9 @@ const Header = ({ headerMenubarOnClick, headerRef, headerUserSearchInput, divAut
         } else if ( '' !== e.target.style.backgroundColor ){
             e.target.style.backgroundColor = '';
         }
+        cancelOnClick();
+
+        newUserAdd(e.target.innerHTML);
 
     }
 
@@ -233,6 +243,7 @@ const Header = ({ headerMenubarOnClick, headerRef, headerUserSearchInput, divAut
             pCancelRef.current.style.display = "block";
             iMenubarRef.current.style.display = "none";
             iptSearchRef.current.style.width = "270px";
+            iptSearchRef.current.style.fontSize = "16px";
             divRightRef.current.style.gridTemplateRows = "60px 1fr";
             divRightRef.current.style.height = "500px";
 
@@ -251,24 +262,35 @@ const Header = ({ headerMenubarOnClick, headerRef, headerUserSearchInput, divAut
 
     const cancelOnClick = () =>{
 
-        chatMainHide(false);
+        //pc
+        if(!(matchMedia("screen and (max-width: 767px)").matches)) {
 
-        divMenubarRef.current.style.display = "block";
-        pCancelRef.current.style.display = "none";
-        iMenubarRef.current.style.display = "inline";
-        iptSearchRef.current.style.width = "163px";
-        divRightRef.current.style.gridTemplateRows = "none";
-        divRightRef.current.style.height = "auto";
+            divAutoRef.current.style.marginTop = "45px";
+            divAutoRef.current.style.height = '0px';
+            divAutoRef.current.style.visibility = 'hidden';
 
-        
-        divAutoRef.current.style.height = "0px";
-        // divAutoRef.current.style.marginLeft = "-5px";
-        
-        // divAutoRef.current.style.marginTop = "600px";
-        
-        divAutoRef.current.style.width = "0px";
-        divAutoRef.current.style.display = "none";
+        //mobile  
+        } else { 
 
+            chatMainHide(false);
+
+            divMenubarRef.current.style.display = "block";
+            pCancelRef.current.style.display = "none";
+            iMenubarRef.current.style.display = "inline";
+            iptSearchRef.current.style.width = "163px";
+            iptSearchRef.current.style.fontSize = "revert";
+            divRightRef.current.style.gridTemplateRows = "none";
+            divRightRef.current.style.height = "auto";
+
+            
+            divAutoRef.current.style.height = "0px";
+            // divAutoRef.current.style.marginLeft = "-5px";
+            
+            // divAutoRef.current.style.marginTop = "600px";
+            
+            divAutoRef.current.style.width = "0px";
+            divAutoRef.current.style.display = "none";
+        }
     }
 
     // const onClickI = () =>{
@@ -338,9 +360,6 @@ const Header = ({ headerMenubarOnClick, headerRef, headerUserSearchInput, divAut
                 <div className={styles.header_div_right} ref={divRightRef}>
                     <input id="ipt_search" ref={iptSearchRef} className={styles.ipt_search} placeholder="user email search" onChange={onChangeSearch} onClick={onClickSearch} ></input>
 
-
-
-
                     <div id="div_search_auto" className={styles.div_search_auto} ref={divAutoRef}>
                         <ul>
                             {
@@ -354,7 +373,6 @@ const Header = ({ headerMenubarOnClick, headerRef, headerUserSearchInput, divAut
                             }
                         </ul>
                     </div>
-
 
                     {/* <i ref={iMenubarRef} className="fa-solid fa-bell" style={{"marginLeft":"20px"}}></i> */}
                     <p ref={pCancelRef} className={styles.p_cancel} onClick={cancelOnClick} >취소</p>

@@ -7,7 +7,7 @@ import styles from "./Side.module.css";
 
 // import Chat from "../Chat/Chat";
 
-const Side = ({ userRooms, sideListOnClick, asideRef }) => {
+const Side = ({ userRooms, sideListOnClick, asideRef, roomListRef }) => {
     
     // const { state } = useLocation();
     
@@ -15,7 +15,7 @@ const Side = ({ userRooms, sideListOnClick, asideRef }) => {
     // const [userRooms, setUserRooms] = React.useState([]);
     // const [userContent, setUserContent] = React.useState([]);
     
-    const roomListRef = React.useRef([]);
+    // const roomListRef = React.useRef([]);
     
     // const forRoof = React.useRef(0);
     // const [msges, setMsges] = React.useState([]);
@@ -352,20 +352,20 @@ const Side = ({ userRooms, sideListOnClick, asideRef }) => {
     // })
     
     const onClick = (e) => {
-
+        
         if ( '' !== e.currentTarget.style.backgroundColor ) return;
 
-        if ( '' === e.currentTarget.style.backgroundColor ) {
+        // if ( '' === e.currentTarget.style.backgroundColor ) {
 
-            for ( let i = 0 ; i < roomListRef.current.length ; i++ ) {
-                roomListRef.current[i].style.backgroundColor = "";
-            }
+        //     for ( let i = 0 ; i < roomListRef.current.length ; i++ ) {
+        //         roomListRef.current[i].style.backgroundColor = "";
+        //     }
 
-            e.currentTarget.style.backgroundColor = "rgb(33 31 38)";
+        //     e.currentTarget.style.backgroundColor = "rgb(33 31 38)";
             
-        }        
-
-        sideListOnClick(Number(e.currentTarget.id));
+        // }        
+        
+        sideListOnClick(userRooms[Number(e.currentTarget.id)], e.currentTarget);
     }
     
     return(
@@ -374,7 +374,7 @@ const Side = ({ userRooms, sideListOnClick, asideRef }) => {
                 {
                     userRooms.map((obj, index)=>{
                         return (
-                            <div key={index} className={styles.div_aside} onClick={onClick} id={index} ref={(ref,index) => {roomListRef.current[index] = ref}} >
+                            <div key={index} className={styles.div_aside} onClick={onClick} id={index} ref={(ref) => {roomListRef.current[index] = ref}} >
                                 <img className={styles.img_profile} src={obj.img} alt=""/>
                                 <b className={styles.b_userName} >{obj.name}</b>
                                 <small className={styles.small_date} >{obj.date}</small>

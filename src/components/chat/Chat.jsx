@@ -4,7 +4,7 @@ import styles from "./Chat.module.css";
 // import { db } from "../../firebase";
 // import { doc, getDocs, collection, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
 
-const Chat = ({ userMsgObj, chatOnKeyDown, chatMainRef }) => {
+const Chat = ({ userMsgObj, chatOnKeyDown, chatMainRef, chatRef }) => {
     //debugger;
     // const onKeyDown = async (e) => {
 
@@ -86,7 +86,7 @@ const Chat = ({ userMsgObj, chatOnKeyDown, chatMainRef }) => {
 
     // }
 
-    const mainRef = React.useRef();
+    //const chatRef = React.useRef();
     const inputRef = React.useRef();
     
     React.useEffect(()=>{
@@ -97,13 +97,14 @@ const Chat = ({ userMsgObj, chatOnKeyDown, chatMainRef }) => {
 
         //최신 채팅 업데이드 시 스크롤 하단으로 이동.
         const chatScroll = document.getElementById("main_div_chat");
-        chatScroll.scrollTop = mainRef.current.scrollHeight;
+        chatScroll.scrollTop = chatRef.current.scrollHeight;
         
     },[userMsgObj.msgList]); //[state.content] 가 바뀔때마다 이벤트 발생.
 
     const onKeyDown = (e) => {
         if ( "Enter" === e.key && "" !== e.target.value ){
             chatOnKeyDown(e.target.value);
+            e.target.value = "";
         }
     }
 
@@ -111,9 +112,9 @@ const Chat = ({ userMsgObj, chatOnKeyDown, chatMainRef }) => {
         
         <main className={styles.main_border_css} ref={chatMainRef} >
             <header className={styles.header_css}>
-                <h2 className={styles.header_title_css}> { undefined !== userMsgObj.title ? userMsgObj.title : null } </h2>
+                <h2 className={styles.header_title_css}> { undefined !== userMsgObj.userName ? userMsgObj.userName : ":D" } </h2>
             </header>
-            <main id="main_div_chat" className={styles.main_css} ref={mainRef}>                
+            <main id="main_div_chat" className={styles.main_css} ref={chatRef}>                
                 {
                     undefined !== userMsgObj.msgList ? 
                     userMsgObj.msgList.map( (obj, index) => {

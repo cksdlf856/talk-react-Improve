@@ -64,21 +64,29 @@ aside::-webkit-scrollbar-thumb{
 @media (max-width: 767px){
 
     .aside_list{
-        /* grid-column: 1/2;
-        grid-row: 2/3; */
+        
         background-color: rgb(25 23 29);
         border-radius: 0px;
         overflow-y: auto;
         overflow-x: hidden;
         height: 100%;
-        width: 70%;
+        /* width: 70%; */
         position: absolute;
-        /* opacity: 0.9; */
+        
         transition: margin 0.5s;
         z-index: 10;
         margin-top: -10px;
-        /* margin-left: -18px; */
-        margin-left: -280px;
+        margin-left: -320px;
+    }
+
+    .div_aside{
+        display: grid;
+        grid-template-columns: 50px 1fr 60px;
+        padding: 15px;
+        grid-template-rows: 10px 40px;
+        column-gap: 15px;
+        cursor: pointer;
+        
     }
 
 }
