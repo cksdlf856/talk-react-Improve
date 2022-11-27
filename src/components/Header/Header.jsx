@@ -218,7 +218,7 @@ const Header = ({ headerMenubarOnClick,
         } else if ( '' !== e.target.style.backgroundColor ){
             e.target.style.backgroundColor = '';
         }
-
+        
         cancelOnClick();
 
         newUserAdd(e.target.innerHTML);
@@ -249,13 +249,10 @@ const Header = ({ headerMenubarOnClick,
             divRightRef.current.style.height = "500px";
 
             divAutoRef.current.style.height = "100%"; //520
-            // divAutoRef.current.style.marginTop = "610px";
-            // divAutoRef.current.style.marginLeft = "-5px";
             
             divAutoRef.current.style.width = "100%";
             divAutoRef.current.style.display = "block";
-            //divAutoRef.current.style.gridRow = "2/3";
-            //divAutoRef.current.style.position = "inherit";
+            
         }
 
         
@@ -283,11 +280,7 @@ const Header = ({ headerMenubarOnClick,
             divRightRef.current.style.gridTemplateRows = "none";
             divRightRef.current.style.height = "auto";
 
-            
             divAutoRef.current.style.height = "0px";
-            // divAutoRef.current.style.marginLeft = "-5px";
-            
-            // divAutoRef.current.style.marginTop = "600px";
             
             divAutoRef.current.style.width = "0px";
             divAutoRef.current.style.display = "none";

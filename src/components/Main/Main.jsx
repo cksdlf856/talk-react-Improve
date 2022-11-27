@@ -40,9 +40,6 @@ const Main = () => {
         async function userChecked(){
             const query = await getDocs(q);
 
-            //console.log("useEffect :: query.size =", query.size);
-            //console.log("==============================================================");
-
             if( 0 === query.size ){
                 const usersRef = collection(db, "users");
                 await setDoc(doc(usersRef, state.email), {
@@ -64,30 +61,45 @@ const Main = () => {
             console.log("=========error============");
             console.log(error);
         });
-
-        //유저검색 리스트
-        const unsubscribe2 = onSnapshot(collection(db, "users"), (snapshot) => {
-            const list = [];
-            snapshot.docChanges().forEach((change) => {
-                if (change.type === "added" ) {
-                    list.push(change.doc.data());
-                    console.log(change.doc.data());
-                }
-            })
-            
-            if ( 0 === userRef.current.length ){
-                userRef.current = list;
-            } else {
-                userRef.current = [...userRef.current, ...list];
-            }
-        })
-        
+ 
         if(!(matchMedia("screen and (max-width: 767px)").matches)) return;
         asideRef.current.style.marginLeft = mobileAsideMargin();
         chatRef.current.style.height = mobileHeight();
         asideRef.current.style.width = (window.innerWidth/1.3) + "px";
         
     },[])
+
+    useEffect(()=>{
+
+        //유저검색 리스트
+        const unsubscribe2 = onSnapshot(collection(db, "users"), (snapshot) => {
+            //const list = [];
+            snapshot.docChanges().forEach((change) => {
+                if (change.type === "added" ) {
+
+                    if ( state.email === change.doc.data().email ) return;
+
+                    if ( 0 === userRef.current.length ){
+                        userRef.current = [change.doc.data()];
+                    } else {
+                        const obj = {
+                            count: 0
+                        }
+                        userRef.current.forEach((data)=>{
+                            if ( data.email === change.doc.data().email ){
+                                obj.count ++;
+                            }
+                        })
+                        if ( 0 === obj.count ){
+                            userRef.current = [...userRef.current, change.doc.data()];
+                        }   
+                    }
+                }
+            })
+            
+        })
+
+    })
 
     useEffect(()=>{
         
@@ -99,9 +111,7 @@ const Main = () => {
                     
                 }
                 if (change.type === "modified") {
-                    //console.log("change.type :: modified :: userRooms = " ,userRooms);
                     setUserRooms(change.doc.data().roomList);
-                    //debugger;
                 }
             });
         },(error) => { 
@@ -113,31 +123,24 @@ const Main = () => {
     useEffect(()=>{
         
         if ( 0 === userRooms.length ) return;
-        
-        //console.log("userRooms = ", userRooms);
+            
         userRooms.forEach((data)=>{
             
             if ( undefined === data.roomName ) return;
             if ( '' === data.roomName ) return;
 
-            const q = query(collection(db, "rooms/"+data.roomName+"/msges"), orderBy("order"));
-            //console.log("userRooms.forEach :: data.roomName = ", data.roomName);
+            const q = query(collection(db, "rooms/"+data.roomName+"/msges"), orderBy("order"));            
             
             msgList();
             async function msgList(){
                 const query = await getDocs(q);
-                //console.log("async :: msgList query.size = ", query.size);
-
+                
                 if ( 0 === query.size )  return;
 
                 const list = [];
                 query.forEach((doc) => {
                     list.push(doc.data());
-                });
-                
-                //console.log("async :: msgList query list = ", list);
-                
-                
+                });        
                 
                 setUserMsges((prev)=>{
                     
@@ -147,7 +150,6 @@ const Main = () => {
                             msgList: list
                         }]
                     } else {
-                        //console.log("setUserMsges :: prev = ", prev);
                         const obj = {
                             count: 0
                         }
@@ -156,10 +158,7 @@ const Main = () => {
                                 obj.count ++;
                             }
                         });
-                        
-                        if ( 0 === obj.count ){
-                            
-                            //console.log( "userRooms.forEach :: list = ", list);
+                        if ( 0 === obj.count ){                            
                             return [...prev, {
                                 roomName: data.roomName,
                                 msgList: list
@@ -170,12 +169,9 @@ const Main = () => {
                 })
             }
         })
-        
-    //},[userRooms])
     })
 
     useEffect(()=>{
-        //console.log(userMsgObj);
         
         if( undefined === userMsgObj.roomName ) return;
         if( '' === userMsgObj.roomName ) return;
@@ -184,38 +180,13 @@ const Main = () => {
         const unsubscribe = onSnapshot(q, (snapshot) => {
             snapshot.docChanges().forEach((change) => {
                 if (change.type === "added") {
-                    //console.log(change.doc.data());
-                    //console.log("=========================================================================")
-                    //console.log("msges onSnapshot :: userMsgOrderRef.current = ", userMsgOrderRef.current);
-                    //console.log("msges onSnapshot :: change.doc.data().order = ", change.doc.data().order);
-                    if(userMsgOrderRef.current < change.doc.data().order){
-                        
-                        //console.log(userMsgObj);
+                    if(userMsgOrderRef.current < change.doc.data().order){  
                         setUserMsgObj((prev)=>({
                             ...prev,
                             msgList: [...prev.msgList, change.doc.data()]
                         }))
-                        
-
-                        // setUserMsgObj((prev)=>({
-                        //     ...prev,
-                        //     msgList: prev.msgList.forEach((data,index)=>{
-                        //         if( data.order !== change.doc.data().order ){
-                        //             return [...prev.msgList, change.doc.data()]
-                        //         }
-                        //         return prev.msgList
-                        //     })
-                        // }))
-
-
                         userMsgOrderRef.current = change.doc.data().order;
-
                     }
-                    
-                }
-                if (change.type === "modified") {
-                    
-                    
                 }
             });
         },(error) => { 
@@ -264,7 +235,6 @@ const Main = () => {
                 })
             }
         }
-
     }
 
     const chatOnKeyDown = async (chat) => {
@@ -316,7 +286,7 @@ const Main = () => {
                     }
                 )
             });
-            //debugger;
+            
             setUserMsgObj((prev)=>({
                 ...prev, roomName: obj.roomName
             }))
@@ -347,7 +317,6 @@ const Main = () => {
         await setDoc(doc(roomsRef, "msg"+(obj.msgSize+1)), msgPushObj);
         
     }
-    
 
     const headerMenubarOnClick = () =>{
         if(!(matchMedia("screen and (max-width: 767px)").matches)) return;
@@ -406,8 +375,7 @@ const Main = () => {
     }
 
     const sideListOnClick = (uRoomsObj, currentTarget) =>{
-        //debugger;
-        //console.log("sideListOnClick :: userMsges = ", userMsges);
+        
         const msgObj = {
             myEmail: state.email,
             myName: state.displayName,
@@ -502,6 +470,7 @@ const Main = () => {
                     setUserRooms((prev)=>{
                         return [...prev, userJson]
                     });
+                
                     sideListOnClick(userJson, null);
                 }
                 

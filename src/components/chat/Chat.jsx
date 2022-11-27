@@ -98,7 +98,7 @@ const Chat = ({ userMsgObj, chatOnKeyDown, chatMainRef, chatRef }) => {
         const chatScroll = document.getElementById("main_div_chat");
         chatScroll.scrollTop = chatRef.current.scrollHeight;
         
-    },[userMsgObj.msgList]); //[state.content] 가 바뀔때마다 이벤트 발생.
+    },[userMsgObj.msgList]); 
 
     const onKeyDown = (e) => {
         if ( "Enter" === e.key && "" !== e.target.value ){
@@ -106,7 +106,7 @@ const Chat = ({ userMsgObj, chatOnKeyDown, chatMainRef, chatRef }) => {
             e.target.value = "";
         }
     }
-    //debugger;
+    
     return(
         
         <main className={styles.main_border_css} ref={chatMainRef} >
