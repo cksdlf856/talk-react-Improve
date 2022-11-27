@@ -328,8 +328,6 @@ const Main = () => {
 
     const mainOnClick = (e) => {
         
-        
-
         if ( 'ipt_search' === e.target.id ) {
             if ( matchMedia("screen and (max-width: 767px)").matches && '-18px' === asideRef.current.style.marginLeft ){
                 mobileSideOnOff();
