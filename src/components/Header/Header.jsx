@@ -218,6 +218,7 @@ const Header = ({ headerMenubarOnClick,
         } else if ( '' !== e.target.style.backgroundColor ){
             e.target.style.backgroundColor = '';
         }
+
         cancelOnClick();
 
         newUserAdd(e.target.innerHTML);
@@ -264,7 +265,7 @@ const Header = ({ headerMenubarOnClick,
 
         //pc
         if(!(matchMedia("screen and (max-width: 767px)").matches)) {
-
+            
             divAutoRef.current.style.marginTop = "45px";
             divAutoRef.current.style.height = '0px';
             divAutoRef.current.style.visibility = 'hidden';
@@ -350,7 +351,7 @@ const Header = ({ headerMenubarOnClick,
 
     //     navigate('/side', {state: stateJson});
     // }
-
+    
     return (
         <header className={styles.header} ref={headerRef}>
             <nav className={styles.header_nav}>

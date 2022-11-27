@@ -92,6 +92,7 @@ li{
 
     .div_menubar{
         margin-top: 8px;
+        visibility: visible;
     }
 
     .header{

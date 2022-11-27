@@ -353,17 +353,7 @@ const Side = ({ userRooms, sideListOnClick, asideRef, roomListRef }) => {
     
     const onClick = (e) => {
         
-        if ( '' !== e.currentTarget.style.backgroundColor ) return;
-
-        // if ( '' === e.currentTarget.style.backgroundColor ) {
-
-        //     for ( let i = 0 ; i < roomListRef.current.length ; i++ ) {
-        //         roomListRef.current[i].style.backgroundColor = "";
-        //     }
-
-        //     e.currentTarget.style.backgroundColor = "rgb(33 31 38)";
-            
-        // }        
+        if ( '' !== e.currentTarget.style.backgroundColor ) return;      
         
         sideListOnClick(userRooms[Number(e.currentTarget.id)], e.currentTarget);
     }

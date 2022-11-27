@@ -1,4 +1,5 @@
 import React from 'react';
+import { useEffect, useState, useRef } from 'react';
 import styles from "./Main.module.css";
 import { useLocation } from 'react-router-dom';
 
@@ -12,38 +13,51 @@ import Chat from '../Chat/Chat';
 const Main = () => {
     
     const { state } = useLocation();
-    const [ userRooms, setUserRooms ] = React.useState([]);
-    const [ userMsgObj, setUserMsgObj ] = React.useState({});
-    const [ userMsges, setUserMsges ] = React.useState([]);
-    const [ userSearchList, setUserSearchList ] = React.useState([]);
+    const [ userRooms, setUserRooms ] = useState([]);
+    const [ userMsgObj, setUserMsgObj ] = useState({});
+    const [ userMsges, setUserMsges ] = useState([]);
+    const [ userSearchList, setUserSearchList ] = useState([]);
 
-    const mainRef = React.useRef();
-    const chatMainRef = React.useRef();
-    const headerRef = React.useRef();
-    const asideRef = React.useRef();
-    const userRef = React.useRef([]);
-    const divAutoRef = React.useRef();
-    const liRef = React.useRef([]);
-    const chatRef = React.useRef();
-    const roomListRef = React.useRef([]);
+    const mainRef = useRef();
+    const chatMainRef = useRef();
+    const headerRef = useRef();
+    const asideRef = useRef();
+    const userRef = useRef([]);
+    const divAutoRef = useRef();
+    const liRef = useRef([]);
+    const chatRef = useRef();
+    const roomListRef = useRef([]);
+    const userMsgOrderRef = useRef(0);
     
-    const searchClickOnOff = React.useRef(false);
+    const searchClickOnOff = useRef(false);
     
-    React.useEffect(()=>{
+    useEffect(()=>{
 
-        //채팅방 리스트
+        // //채팅방 리스트
         const q = query(collection(db, "users"), where("email", "==", state.email));
+        
+        userChecked();
+        async function userChecked(){
+            const query = await getDocs(q);
+
+            //console.log("useEffect :: query.size =", query.size);
+            //console.log("==============================================================");
+
+            if( 0 === query.size ){
+                const usersRef = collection(db, "users");
+                await setDoc(doc(usersRef, state.email), {
+                    email: state.email,
+                    name: state.displayName,
+                    roomList: []
+                });
+            }
+
+        }
+
         const unsubscribe = onSnapshot(q, (snapshot) => {
             snapshot.docChanges().forEach((change) => {
-                if (change.type === "added") {
-                    console.log(change.doc.data());
-
+                if (change.type === "added") {                
                     setUserRooms(change.doc.data().roomList);
-                }
-                if (change.type === "modified") {
-                    
-                    setUserRooms(change.doc.data().roomList);
-                    
                 }
             });
         },(error) => { 
@@ -55,13 +69,10 @@ const Main = () => {
         const unsubscribe2 = onSnapshot(collection(db, "users"), (snapshot) => {
             const list = [];
             snapshot.docChanges().forEach((change) => {
-
-                if (change.type === "added") {
-
+                if (change.type === "added" ) {
                     list.push(change.doc.data());
-                    
+                    console.log(change.doc.data());
                 }
-
             })
             
             if ( 0 === userRef.current.length ){
@@ -78,18 +89,44 @@ const Main = () => {
         
     },[])
 
-    React.useEffect(()=>{
+    useEffect(()=>{
         
-        //debugger;
-        userRooms.forEach((data)=>{
+        //채팅방 리스트
+        const q = query(collection(db, "users"), where("email", "==", state.email));
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            snapshot.docChanges().forEach((change) => {
+                if (change.type === "added") {
+                    
+                }
+                if (change.type === "modified") {
+                    //console.log("change.type :: modified :: userRooms = " ,userRooms);
+                    setUserRooms(change.doc.data().roomList);
+                    //debugger;
+                }
+            });
+        },(error) => { 
+            console.log("=========error============");
+            console.log(error);
+        });
+    })
 
+    useEffect(()=>{
+        
+        if ( 0 === userRooms.length ) return;
+        
+        //console.log("userRooms = ", userRooms);
+        userRooms.forEach((data)=>{
+            
+            if ( undefined === data.roomName ) return;
             if ( '' === data.roomName ) return;
 
             const q = query(collection(db, "rooms/"+data.roomName+"/msges"), orderBy("order"));
+            //console.log("userRooms.forEach :: data.roomName = ", data.roomName);
+            
             msgList();
             async function msgList(){
-
                 const query = await getDocs(q);
+                //console.log("async :: msgList query.size = ", query.size);
 
                 if ( 0 === query.size )  return;
 
@@ -97,32 +134,99 @@ const Main = () => {
                 query.forEach((doc) => {
                     list.push(doc.data());
                 });
-                //debugger;
                 
-                if ( 0 === userMsges.length ){
-                    setUserMsges([{
-                        roomName: data.roomName,
-                        msgList: list
-                    }])
-                } else {
-                    userMsges.forEach((msgData)=>{
-                        if ( data.roomName !== msgData.roomName ){
-                            setUserMsges((prev)=>{
-                                return [...prev, {
-                                    roomName: data.roomName,
-                                    msgList: list
-                                }]
-                            })
+                //console.log("async :: msgList query list = ", list);
+                
+                
+                
+                setUserMsges((prev)=>{
+                    
+                    if ( 0 === prev.length ){
+                        return [{
+                            roomName: data.roomName,
+                            msgList: list
+                        }]
+                    } else {
+                        //console.log("setUserMsges :: prev = ", prev);
+                        const obj = {
+                            count: 0
                         }
-                    })
-                }
+                        prev.forEach((prevData)=>{
+                            if( data.roomName === prevData.roomName ){
+                                obj.count ++;
+                            }
+                        });
+                        
+                        if ( 0 === obj.count ){
+                            
+                            //console.log( "userRooms.forEach :: list = ", list);
+                            return [...prev, {
+                                roomName: data.roomName,
+                                msgList: list
+                            }]
+                        }
+                        return prev
+                    }
+                })
             }
         })
+        
+    //},[userRooms])
+    })
 
-    },[])//userRooms, userMsges
+    useEffect(()=>{
+        //console.log(userMsgObj);
+        
+        if( undefined === userMsgObj.roomName ) return;
+        if( '' === userMsgObj.roomName ) return;
+        
+        const q = query(collection(db, "rooms/"+userMsgObj.roomName+"/msges"), orderBy("order"));
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            snapshot.docChanges().forEach((change) => {
+                if (change.type === "added") {
+                    //console.log(change.doc.data());
+                    //console.log("=========================================================================")
+                    //console.log("msges onSnapshot :: userMsgOrderRef.current = ", userMsgOrderRef.current);
+                    //console.log("msges onSnapshot :: change.doc.data().order = ", change.doc.data().order);
+                    if(userMsgOrderRef.current < change.doc.data().order){
+                        
+                        //console.log(userMsgObj);
+                        setUserMsgObj((prev)=>({
+                            ...prev,
+                            msgList: [...prev.msgList, change.doc.data()]
+                        }))
+                        
 
-    React.useEffect(()=>{
+                        // setUserMsgObj((prev)=>({
+                        //     ...prev,
+                        //     msgList: prev.msgList.forEach((data,index)=>{
+                        //         if( data.order !== change.doc.data().order ){
+                        //             return [...prev.msgList, change.doc.data()]
+                        //         }
+                        //         return prev.msgList
+                        //     })
+                        // }))
 
+
+                        userMsgOrderRef.current = change.doc.data().order;
+
+                    }
+                    
+                }
+                if (change.type === "modified") {
+                    
+                    
+                }
+            });
+        },(error) => { 
+            console.log("=========error============");
+            console.log(error);
+        });
+
+    })
+
+    useEffect(()=>{
+        
         if(!searchClickOnOff.current) return;
         sideFocus();
 
@@ -169,7 +273,7 @@ const Main = () => {
             roomName: userMsgObj.roomName,
             msgSize: userMsgObj.msgList.length
         }
-
+        
         //상대방과 최초 대화시 방 만들어주기.
         if ( 0 === obj.msgSize ){
             
@@ -212,36 +316,50 @@ const Main = () => {
                     }
                 )
             });
+            //debugger;
+            setUserMsgObj((prev)=>({
+                ...prev, roomName: obj.roomName
+            }))
 
         }
 
-        // firebase 채팅 push
-        const roomsRef = collection(db, "rooms/"+ obj.roomName +"/msges");
-        await setDoc(doc(roomsRef, "msg"+(obj.msgSize+1)), {
+        const msgPushObj = {
             chat: chat,
             from: state.displayName, 
             time: date().time, 
             date: date().date,
             email: state.email,
             order: obj.msgSize+1
-        });
+        }
 
-        console.log(userMsgObj);
+        if ( 0 === obj.msgSize ){
+
+            userMsgOrderRef.current = obj.msgSize+1;
+            setUserMsgObj((prev)=>({
+                ...prev,
+                msgList: [...prev.msgList, msgPushObj]
+            }))
+
+        }
+
+        // firebase 채팅 push
+        const roomsRef = collection(db, "rooms/"+ obj.roomName +"/msges");
+        await setDoc(doc(roomsRef, "msg"+(obj.msgSize+1)), msgPushObj);
         
-        debugger;
     }
+    
 
     const headerMenubarOnClick = () =>{
         if(!(matchMedia("screen and (max-width: 767px)").matches)) return;
         asideRef.current.style.marginLeft = '-18px';
         chatMainRef.current.style.opacity = '0.1';
         headerRef.current.style.opacity = '0.1';
-        console.log("올리기");
+        //console.log("올리기");
     }
 
     const mainOnClick = (e) => {
         
-        console.log(e.target.localName);
+        
 
         if ( 'ipt_search' === e.target.id ) {
             if ( matchMedia("screen and (max-width: 767px)").matches && '-18px' === asideRef.current.style.marginLeft ){
@@ -269,7 +387,7 @@ const Main = () => {
         if ( '-18px' === asideRef.current.style.marginLeft ){
             mobileSideOnOff();
         }
-        console.log("내리기");
+        //console.log("내리기");
     }
 
     const mobileSideOnOff = () =>{
@@ -288,7 +406,8 @@ const Main = () => {
     }
 
     const sideListOnClick = (uRoomsObj, currentTarget) =>{
-        
+        //debugger;
+        //console.log("sideListOnClick :: userMsges = ", userMsges);
         const msgObj = {
             myEmail: state.email,
             myName: state.displayName,
@@ -301,6 +420,10 @@ const Main = () => {
                 }
                 return []
             }).flat()
+        }
+        
+        if ( 0 !== msgObj.msgList.length ){
+            userMsgOrderRef.current = msgObj.msgList[msgObj.msgList.length-1].order;
         }
 
         setUserMsgObj(msgObj);
@@ -317,16 +440,18 @@ const Main = () => {
         } else { 
             
             roomListRef.current.forEach((data)=>{
+                
                 //===userRooms 기존에 있는 유저 클릭시===
                 if( uRoomsObj.name === data.innerText.split('\n')[0] ){ 
                     data.style.backgroundColor = "rgb(33 31 38)";
-
+                    
                 //===userRooms 새로 추가된 유저 클릭시===  
                 } else { 
+                    
                     searchClickOnOff.current = true;
                 }
             }) 
-
+            
         }
 
     }
@@ -338,13 +463,10 @@ const Main = () => {
 
     const newUserAdd = (userEmail) =>{
 
-        console.log(userRooms);
-        console.log(userMsges);
-
         const cntObj = {
             cnt: 0
         }
-
+        
         userRooms.forEach((data)=>{
             if( userEmail === data.emailY ){
                 sideListOnClick(data, null);
@@ -356,6 +478,7 @@ const Main = () => {
         
 
         userRef.current.forEach((data)=>{
+            
             if ( data.email === userEmail ){
                 const userJson = {
                     date: date().date,
@@ -365,7 +488,7 @@ const Main = () => {
                     roomName: "",
                     titleContents: "",
                 }
-
+                
                 const cntObj = {
                     cnt: 0
                 }
@@ -374,7 +497,7 @@ const Main = () => {
                         cntObj.cnt++;
                     }
                 })
-
+                
                 if ( 0 === cntObj.cnt ){
                     setUserRooms((prev)=>{
                         return [...prev, userJson]
@@ -382,7 +505,6 @@ const Main = () => {
                     sideListOnClick(userJson, null);
                 }
                 
-                //debugger;
             }
         })
 

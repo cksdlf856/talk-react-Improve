@@ -90,7 +90,6 @@ const Chat = ({ userMsgObj, chatOnKeyDown, chatMainRef, chatRef }) => {
     const inputRef = React.useRef();
     
     React.useEffect(()=>{
-        
         const contentLength = (undefined === userMsgObj.msgList ? 0 : userMsgObj.msgList.length);
 
         if( 0 === contentLength ) return;
@@ -107,7 +106,7 @@ const Chat = ({ userMsgObj, chatOnKeyDown, chatMainRef, chatRef }) => {
             e.target.value = "";
         }
     }
-
+    //debugger;
     return(
         
         <main className={styles.main_border_css} ref={chatMainRef} >
@@ -126,7 +125,7 @@ const Chat = ({ userMsgObj, chatOnKeyDown, chatMainRef, chatRef }) => {
                 }
             </main>
             <footer className={styles.footer_css}>
-                <input className={styles.input_css} onKeyDown={onKeyDown} ref={inputRef} maxLength="45"/>
+                <input className={styles.input_css} onKeyDown={onKeyDown} ref={inputRef} inputMode={"search"} maxLength="45"/>
             </footer>
         </main>
         
